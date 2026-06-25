@@ -70,7 +70,10 @@ const normalizedData = Object.fromEntries(
 ) as Record<string, Surah>;
 
 const normalizedParallelData = Object.fromEntries(
-  Object.entries(parallelData).map(([number, surah]) => [number, normalizeParallelSurah(surah)]),
+  Object.entries(parallelData).map(([key, surah]) => {
+    const number = key.split(".")[0].trim();
+    return [number, normalizeParallelSurah(surah)];
+  }),
 ) as Record<string, ParallelSurah>;
 
 type SurahEntry = {
@@ -333,7 +336,7 @@ function SurahPage() {
           {mode === "parallel" ? (
             <div className="parallel-grid">
               <ReaderPane title={`Chapter ${number}`} surah={surah} />
-              <ParallelPane title={`Chapter ${number}`} surah={parallelSurah} />
+              <ParallelPane title={`Chapter ${number}`} surah={parallelSurah ?? { name: surah.name, verses: {} }} />
             </div>
           ) : (
             <ReaderPane title={`Chapter ${number}`} surah={surah} />
