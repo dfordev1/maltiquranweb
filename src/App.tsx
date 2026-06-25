@@ -100,32 +100,21 @@ function Shell({ children }: { children: React.ReactNode }) {
           <p className="eyebrow">Il-Quran bil-Malti</p>
           <h1>Maltese Quran reader</h1>
           <p className="lede">
-            Clean, static, and simple. The site reads directly from local JSON with real surah
-            pages for better discovery.
+            A quiet, minimal reading space for the Maltese Quran. Simple like a classic book,
+            with no distraction and no decorative clutter.
           </p>
           <div className="hero-actions">
-            <Link className="primary-action" to="/">
+            <Link className="text-link" to="/">
               Start reading
             </Link>
-            <a className="secondary-action" href={playStoreUrl} target="_blank" rel="noreferrer">
-              <Smartphone size={16} /> Get the Android app
+            <a className="text-link" href={playStoreUrl} target="_blank" rel="noreferrer">
+              Android app
             </a>
           </div>
         </div>
-        <div className="hero-stack">
-          <div className="hero-badge">
-            <Shield size={18} />
-            <span>Static-first launch base</span>
-          </div>
-          <a className="app-card" href={playStoreUrl} target="_blank" rel="noreferrer">
-            <div className="app-card-top">
-              <Smartphone size={18} />
-              <span>Android app</span>
-            </div>
-            <strong>Available on Google Play</strong>
-            <p>Continue reading on mobile with the companion app.</p>
-            <span className="app-card-link">Open Play Store <ChevronRight size={14} /></span>
-          </a>
+        <div className="hero-badge">
+          <Shield size={18} />
+          <span>Plain reading mode</span>
         </div>
       </header>
       {children}
@@ -184,7 +173,7 @@ function HomePage() {
             <BookOpen size={18} />
             <span>Surahs</span>
           </div>
-          <p className="list-caption">Pick a surah to open its dedicated page.</p>
+          <p className="list-caption">Select a surah.</p>
           <div className="surah-list">
             {filtered.map((surah) => (
               <Link key={surah.number} to={`/surah/${surah.number}-${surah.slug}`} className="surah-item">
@@ -200,17 +189,13 @@ function HomePage() {
         <article className="panel reader-panel">
           <div className="panel-title">
             <BookOpen size={18} />
-            <span>Read a surah</span>
+            <span>Read</span>
           </div>
           <div className="page page-landing">
-            <h2>Select a surah from the list</h2>
-            <p>
-              Each surah now has its own crawlable URL so search engines can index the content more
-              effectively.
-            </p>
+            <h2>Choose a chapter from the left.</h2>
             <div className="page-note">
               <ChevronRight size={14} />
-              <span>Open any surah to read verse-by-verse in a focused layout.</span>
+              <span>Each chapter has its own page and clean title.</span>
             </div>
           </div>
         </article>
@@ -275,8 +260,8 @@ function SurahPage() {
               <h2>{surah.name}</h2>
               <p className="surah-meta">{Object.keys(surah.verses).length} verses</p>
             </div>
-            <a className="secondary-action" href={playStoreUrl} target="_blank" rel="noreferrer">
-              <Smartphone size={16} /> Android app
+            <a className="text-link subtle" href={playStoreUrl} target="_blank" rel="noreferrer">
+              Android app
             </a>
           </div>
           <div className="verses">
