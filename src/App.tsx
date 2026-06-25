@@ -96,11 +96,11 @@ function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="app-shell bible-shell">
       <header className="topbar">
-        <div className="brand">Bible App</div>
+        <div className="brand">Il-Quran bil-Malti</div>
         <nav className="topnav">
-          <Link to="/">Bible</Link>
-          <a href="#plans">Plans</a>
-          <a href="#videos">Videos</a>
+          <Link to="/">Quran</Link>
+          <a href="#plans">Readings</a>
+          <a href="#videos">About</a>
         </nav>
         <form className="search-pill" onSubmit={(event) => event.preventDefault()}>
           <Search size={18} />
