@@ -231,35 +231,6 @@ button {
   font-size: 0.95rem;
 }
 
-.parallel-hint {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.mode-row {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  padding: 10px 22px 0;
-}
-
-.mode-pill {
-  padding: 8px 14px;
-  border: 1px solid #e1e1e1;
-  border-radius: 999px;
-  background: #fff;
-  color: #333;
-  font-size: 0.9rem;
-  font-weight: 700;
-}
-
-.mode-pill.active {
-  border-color: #111;
-  background: #111;
-  color: #fff;
-}
-
 .surah-header {
   text-align: center;
   padding-bottom: 14px;
@@ -272,45 +243,6 @@ button {
 .surah-header h2 {
   font-size: 1.8rem;
   letter-spacing: -0.03em;
-}
-
-.reader-stage {
-  position: relative;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: stretch;
-  gap: 12px;
-  padding: 14px 0 24px;
-}
-
-.reader-stage.parallel {
-  padding-top: 10px;
-}
-
-.parallel-grid {
-  width: min(100%, 1520px);
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  align-items: start;
-  padding: 0 16px;
-}
-
-.parallel-verse {
-  padding: 8px 0;
-  border-bottom: 1px solid #ededed;
-}
-
-.parallel-texts {
-  display: grid;
-  gap: 8px;
-}
-
-.parallel-texts p {
-  margin: 0;
-  font-size: 0.94rem;
-  line-height: 1.7;
 }
 
 .verses {
@@ -404,10 +336,6 @@ button {
     width: min(760px, calc(100% - 40px));
   }
 
-  .parallel-grid {
-    grid-template-columns: 1fr;
-  }
-
   .nav-arrow {
     width: 44px;
     height: 44px;
@@ -430,10 +358,6 @@ button {
   .toolbar-row {
     padding: 12px 14px 10px;
     gap: 10px;
-  }
-
-  .mode-row {
-    padding: 8px 14px 0;
   }
 
   .select-box {
@@ -461,10 +385,6 @@ button {
 
   .surah-header h2 {
     font-size: 1.45rem;
-  }
-
-  .parallel-texts p {
-    font-size: 0.9rem;
   }
 
   .verse {
