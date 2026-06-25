@@ -97,11 +97,6 @@ function Shell({ children }: { children: React.ReactNode }) {
     <div className="app-shell bible-shell">
       <header className="topbar">
         <div className="brand">Il-Quran bil-Malti</div>
-        <nav className="topnav">
-          <Link to="/">Quran</Link>
-          <a href="#plans">Readings</a>
-          <a href="#videos">About</a>
-        </nav>
         <form className="search-pill" onSubmit={(event) => event.preventDefault()}>
           <Search size={18} />
           <input aria-label="Search verses, topics, and questions" placeholder="Search verses, topics, and questions..." />
@@ -148,16 +143,14 @@ function HomePage() {
       <div className="toolbar-row">
         <select
           className="select-box"
-          aria-label="Select surah"
+          aria-label="Select chapter"
           defaultValue=""
           onChange={(event) => {
             if (!event.target.value) return;
             navigate(`/surah/${event.target.value}`);
           }}
         >
-          <option value="">
-            Choose a surah
-          </option>
+          <option value="">Chapter</option>
           {surahs.map((surah) => (
             <option key={surah.number} value={`${surah.number}-${surah.slug}`}>
               {surah.number}. {surah.name}
@@ -182,24 +175,9 @@ function HomePage() {
       </div>
 
       <main className="content-grid home-grid">
-        <aside className="panel list-panel">
-          <div className="section-head">
-            <BookOpen size={16} />
-            <span>Surahs</span>
-          </div>
-          <div className="surah-list">
-            {filtered.map((surah) => (
-              <Link key={surah.number} to={`/surah/${surah.number}-${surah.slug}`} className="surah-item">
-                <strong>{surah.name}</strong>
-                <span>{surah.verseCount} verses</span>
-              </Link>
-            ))}
-          </div>
-        </aside>
-
         <article className="panel reader-panel landing-panel">
           <div className="page page-landing">
-            <h2>Select a surah</h2>
+            <h2>Select a chapter</h2>
             <div className="page-note">
               <ChevronRight size={14} />
               <span>Each chapter opens on its own page.</span>
@@ -216,6 +194,9 @@ function SurahPage() {
   const navigate = useNavigate();
   const number = id?.split("-")[0] ?? "";
   const surah = normalizedData[number];
+  const currentIndex = surahs.findIndex((item) => item.number === number);
+  const previousSurah = currentIndex > 0 ? surahs[currentIndex - 1] : null;
+  const nextSurah = currentIndex >= 0 && currentIndex < surahs.length - 1 ? surahs[currentIndex + 1] : null;
 
   useEffect(() => {
     if (!surah) return;
@@ -246,14 +227,14 @@ function SurahPage() {
         <div className="toolbar-row page-toolbar">
           <select
             className="select-box"
-            aria-label="Select surah"
+            aria-label="Select chapter"
             value={id ?? ""}
             onChange={(event) => {
               if (!event.target.value) return;
               navigate(`/surah/${event.target.value}`);
             }}
           >
-            <option value="">Choose a surah</option>
+            <option value="">Chapter</option>
             {surahs.map((item) => (
               <option key={item.number} value={`${item.number}-${item.slug}`}>
                 {item.number}. {item.name}
@@ -277,14 +258,20 @@ function SurahPage() {
           </div>
         </div>
 
-        <button className="nav-arrow left" type="button" aria-label="Previous chapter">
-          <ChevronLeft size={34} />
+        <button
+          className="nav-arrow left"
+          type="button"
+          aria-label="Previous chapter"
+          disabled={!previousSurah}
+          onClick={() => previousSurah && navigate(`/surah/${previousSurah.number}-${previousSurah.slug}`)}
+        >
+          <ChevronLeft size={22} />
         </button>
 
         <article className="panel reader-panel">
           <div className="surah-header">
             <div>
-              <p className="chapter-label">{surah.name.toUpperCase()}</p>
+              <p className="chapter-label">Chapter {number}</p>
               <h2>{surah.name}</h2>
             </div>
           </div>
@@ -298,8 +285,14 @@ function SurahPage() {
           </div>
         </article>
 
-        <button className="nav-arrow right" type="button" aria-label="Next chapter">
-          <ChevronRight size={34} />
+        <button
+          className="nav-arrow right"
+          type="button"
+          aria-label="Next chapter"
+          disabled={!nextSurah}
+          onClick={() => nextSurah && navigate(`/surah/${nextSurah.number}-${nextSurah.slug}`)}
+        >
+          <ChevronRight size={22} />
         </button>
       </main>
     </Shell>
