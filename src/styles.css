@@ -185,9 +185,9 @@ button {
 
 .surah-grid {
   position: relative;
-  grid-template-columns: 300px minmax(0, 1fr);
-  justify-items: stretch;
-  padding: 0 0 24px;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  padding: 34px 0 24px;
 }
 
 .panel {
@@ -240,22 +240,10 @@ button {
   margin: 0 auto;
 }
 
-.surah-grid .reader-panel {
-  width: min(820px, calc(100% - 80px));
-  margin: 0;
-}
-
 .landing-panel {
   display: grid;
   place-items: center;
   border-left: 1px solid var(--line);
-}
-
-.side-rail {
-  display: block;
-  min-height: 72vh;
-  border-right: 1px solid var(--line);
-  padding: 12px 0 0 26px;
 }
 
 .page {
@@ -348,11 +336,6 @@ button {
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
 }
 
-.nav-arrow:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-
 .nav-arrow.left {
   left: 48px;
 }
@@ -399,21 +382,6 @@ button {
 
   .reader-panel {
     width: min(760px, calc(100% - 56px));
-  }
-
-  .surah-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .surah-grid .reader-panel {
-    width: calc(100% - 28px);
-  }
-
-  .side-rail {
-    min-height: auto;
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
-    padding: 12px 14px;
   }
 
   .nav-arrow {

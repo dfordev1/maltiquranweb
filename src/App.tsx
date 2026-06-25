@@ -216,9 +216,6 @@ function SurahPage() {
   const navigate = useNavigate();
   const number = id?.split("-")[0] ?? "";
   const surah = normalizedData[number];
-  const currentIndex = surahs.findIndex((item) => item.number === number);
-  const previousSurah = currentIndex > 0 ? surahs[currentIndex - 1] : null;
-  const nextSurah = currentIndex >= 0 && currentIndex < surahs.length - 1 ? surahs[currentIndex + 1] : null;
 
   useEffect(() => {
     if (!surah) return;
@@ -276,28 +273,7 @@ function SurahPage() {
           </div>
         </div>
 
-        <aside className="panel list-panel side-rail">
-          <div className="section-head">
-            <BookOpen size={16} />
-            <span>Surahs</span>
-          </div>
-          <div className="surah-list">
-            {surahs.map((item) => (
-              <Link key={item.number} to={`/surah/${item.number}-${item.slug}`} className="surah-item">
-                <strong>{item.name}</strong>
-                <span>{item.verseCount} verses</span>
-              </Link>
-            ))}
-          </div>
-        </aside>
-
-        <button
-          className="nav-arrow left"
-          type="button"
-          aria-label="Previous chapter"
-          disabled={!previousSurah}
-          onClick={() => previousSurah && navigate(`/surah/${previousSurah.number}-${previousSurah.slug}`)}
-        >
+        <button className="nav-arrow left" type="button" aria-label="Previous chapter">
           <ChevronLeft size={34} />
         </button>
 
@@ -318,13 +294,7 @@ function SurahPage() {
           </div>
         </article>
 
-        <button
-          className="nav-arrow right"
-          type="button"
-          aria-label="Next chapter"
-          disabled={!nextSurah}
-          onClick={() => nextSurah && navigate(`/surah/${nextSurah.number}-${nextSurah.slug}`)}
-        >
+        <button className="nav-arrow right" type="button" aria-label="Next chapter">
           <ChevronRight size={34} />
         </button>
       </main>
