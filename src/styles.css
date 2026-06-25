@@ -223,14 +223,6 @@ button {
   font-weight: 800;
 }
 
-.page-note {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--muted);
-  font-size: 0.95rem;
-}
-
 .surah-header {
   text-align: center;
   padding-bottom: 14px;

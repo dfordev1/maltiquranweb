@@ -150,7 +150,7 @@ function HomePage() {
             navigate(`/surah/${event.target.value}`);
           }}
         >
-          <option value="1-al-fatiha">Chapter</option>
+          <option value="1-al-fatiha">1. Al-Fatiha</option>
           {surahs.map((surah) => (
             <option key={surah.number} value={`${surah.number}-${surah.slug}`}>
               {surah.number}. {surah.name}
@@ -177,11 +177,7 @@ function HomePage() {
       <main className="content-grid home-grid">
         <article className="panel reader-panel landing-panel">
           <div className="page page-landing">
-            <h2>Select a chapter</h2>
-            <div className="page-note">
-              <ChevronRight size={14} />
-              <span>Each chapter opens on its own page.</span>
-            </div>
+            <h2>1. Al-Fatiha</h2>
           </div>
         </article>
       </main>
@@ -234,7 +230,7 @@ function SurahPage() {
               navigate(`/surah/${event.target.value}`);
             }}
           >
-            <option value="1-al-fatiha">Chapter</option>
+            <option value="1-al-fatiha">1. Al-Fatiha</option>
             {surahs.map((item) => (
               <option key={item.number} value={`${item.number}-${item.slug}`}>
                 {item.number}. {item.name}
@@ -271,7 +267,7 @@ function SurahPage() {
         <article className="panel reader-panel">
           <div className="surah-header">
             <div>
-              <p className="chapter-label">Chapter {number}</p>
+              <p className="chapter-label">1. Al-Fatiha</p>
               <h2>{surah.name}</h2>
             </div>
           </div>
