@@ -154,8 +154,8 @@ function HomePage() {
             if (!event.target.value) return;
             navigate(`/surah/${event.target.value}`);
           }}
-          >
-          <option value="" disabled>
+        >
+          <option value="">
             Choose a surah
           </option>
           {surahs.map((surah) => (
@@ -248,8 +248,12 @@ function SurahPage() {
             className="select-box"
             aria-label="Select surah"
             value={id ?? ""}
-            onChange={(event) => navigate(`/surah/${event.target.value}`)}
+            onChange={(event) => {
+              if (!event.target.value) return;
+              navigate(`/surah/${event.target.value}`);
+            }}
           >
+            <option value="">Choose a surah</option>
             {surahs.map((item) => (
               <option key={item.number} value={`${item.number}-${item.slug}`}>
                 {item.number}. {item.name}
