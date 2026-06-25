@@ -44,7 +44,7 @@ a {
 .app-shell {
   width: min(620px, calc(100% - 24px));
   margin: 0 auto;
-  padding: 10px 0 18px;
+  padding: 8px 0 12px;
 }
 
 .panel {
@@ -55,7 +55,7 @@ a {
 .site-header {
   border: 1px solid var(--frame);
   background: linear-gradient(#fbfbf4, #ece9d9);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   box-shadow: 0 1px 0 var(--shadow);
 }
 
@@ -64,14 +64,14 @@ a {
   justify-content: space-between;
   gap: 12px;
   align-items: flex-start;
-  padding: 10px 12px 8px;
+  padding: 8px 10px 6px;
   border-bottom: 4px solid var(--header);
 }
 
 .masthead-title h1 {
   margin: 2px 0 0;
   font-family: "Times New Roman", Times, serif;
-  font-size: 2rem;
+  font-size: 1.8rem;
   line-height: 1;
   font-weight: 700;
   color: #2c251f;
@@ -91,8 +91,8 @@ a {
   gap: 10px;
   flex-wrap: wrap;
   justify-content: flex-end;
-  padding-top: 3px;
-  font-size: 0.78rem;
+  padding-top: 2px;
+  font-size: 0.72rem;
   text-transform: uppercase;
   line-height: 1.2;
 }
@@ -109,7 +109,7 @@ a {
   display: flex;
   justify-content: space-between;
   gap: 8px;
-  padding: 6px 12px;
+  padding: 5px 10px;
   background: var(--soft);
   color: #243000;
   font-size: 0.72rem;
@@ -126,8 +126,8 @@ a {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 8px;
-  margin-bottom: 8px;
+  padding: 5px 7px;
+  margin-bottom: 6px;
   background: #ece8db;
   border: 1px solid #a7a089;
 }
@@ -145,13 +145,13 @@ a {
   flex: 1;
   border: 1px solid #b5b09e;
   background: #fff;
-  padding: 7px 8px;
+  padding: 6px 8px;
 }
 
 .content-grid {
   display: grid;
-  grid-template-columns: 150px minmax(0, 1fr);
-  gap: 8px;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 6px;
   align-items: start;
 }
 
@@ -162,7 +162,7 @@ a {
 .list-panel,
 .reader-panel,
 .page {
-  padding: 8px;
+  padding: 7px;
 }
 
 .list-panel,
@@ -187,10 +187,10 @@ a {
 .list-caption,
 .surah-meta,
 .page-note {
-  margin: 8px 0 10px;
+  margin: 6px 0 8px;
   color: var(--muted);
-  font-size: 0.84rem;
-  line-height: 1.5;
+  font-size: 0.8rem;
+  line-height: 1.45;
 }
 
 .surah-list {
@@ -200,7 +200,7 @@ a {
 
 .surah-item {
   display: block;
-  padding: 7px 8px;
+  padding: 6px 7px;
   border: 1px solid transparent;
   background: #f9f8f2;
   line-height: 1.25;
@@ -238,7 +238,7 @@ a {
 }
 
 .reader-panel {
-  min-height: 72vh;
+  min-height: 58vh;
   border: 1px solid #a8a279;
 }
 
@@ -247,8 +247,8 @@ a {
   justify-content: space-between;
   gap: 10px;
   align-items: flex-start;
-  margin-bottom: 10px;
-  padding-bottom: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -256,7 +256,7 @@ a {
 .page h2 {
   margin: 2px 0 0;
   font-family: "Times New Roman", Times, serif;
-  font-size: 1.7rem;
+  font-size: 1.5rem;
   line-height: 1.1;
 }
 
@@ -278,7 +278,7 @@ a {
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr);
   gap: 8px;
-  padding: 10px 0;
+  padding: 8px 0;
   border-bottom: 1px solid var(--line);
 }
 
@@ -304,15 +304,15 @@ a {
 
 .verse p {
   margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.8;
+  font-size: 0.9rem;
+  line-height: 1.65;
 }
 
 .page {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-height: 160px;
+  min-height: 120px;
 }
 
 .page-landing {
@@ -328,11 +328,11 @@ a {
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin-top: 8px;
-  padding: 7px 10px;
+  margin-top: 6px;
+  padding: 6px 10px;
   background: var(--header);
   color: #fff;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   border-color: #7f1114;
 }
 
@@ -359,6 +359,10 @@ a {
 
   .site-strip span {
     white-space: normal;
+  }
+
+  .masthead-links {
+    justify-content: flex-start;
   }
 
   .content-grid {

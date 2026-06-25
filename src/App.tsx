@@ -116,7 +116,6 @@ function Shell({ children }: { children: React.ReactNode }) {
           <span>Simple reading layout</span>
           <span>Static-first</span>
           <span>Plain Maltese text</span>
-          <span>Archive-inspired frame</span>
         </div>
       </header>
       {children}
@@ -190,10 +189,10 @@ function HomePage() {
             <span>Welcome</span>
           </div>
           <div className="page page-landing">
-            <h2>Select a surah to begin</h2>
+            <h2>Select a surah</h2>
             <div className="page-note">
               <ChevronRight size={14} />
-              <span>The site opens each chapter on its own page.</span>
+              <span>Each chapter opens on its own page.</span>
             </div>
           </div>
         </article>
