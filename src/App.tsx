@@ -144,13 +144,13 @@ function HomePage() {
         <select
           className="select-box"
           aria-label="Select chapter"
-          defaultValue=""
+          defaultValue="1-al-fatiha"
           onChange={(event) => {
             if (!event.target.value) return;
             navigate(`/surah/${event.target.value}`);
           }}
         >
-          <option value="">Chapter</option>
+          <option value="1-al-fatiha">Chapter</option>
           {surahs.map((surah) => (
             <option key={surah.number} value={`${surah.number}-${surah.slug}`}>
               {surah.number}. {surah.name}
@@ -234,7 +234,7 @@ function SurahPage() {
               navigate(`/surah/${event.target.value}`);
             }}
           >
-            <option value="">Chapter</option>
+            <option value="1-al-fatiha">Chapter</option>
             {surahs.map((item) => (
               <option key={item.number} value={`${item.number}-${item.slug}`}>
                 {item.number}. {item.name}
