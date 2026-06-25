@@ -1,11 +1,15 @@
-import { useMemo, useState } from 'react';
-import { BookOpen, Info, Search, ShieldCheck } from 'lucide-react';
-import quranData from './data/quran.json';
+import { useMemo, useState } from "react";
+import { BookOpen, Menu, Search, Shield, Info } from "lucide-react";
 
 type Verse = { translation: string };
 type Surah = { name: string; verses: Record<string, Verse> };
 
-const data = quranData as Record<string, Surah>;
+const chunkModules = import.meta.glob("./data/quran/*.json", { eager: true });
+const data = Object.fromEntries(
+  Object.entries(chunkModules)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .flatMap(([, module]) => Object.entries(module as Record<string, Surah>)),
+) as Record<string, Surah>;
 
 export default function App() {
   const surahs = useMemo(
@@ -18,16 +22,16 @@ export default function App() {
     [],
   );
 
-  const [query, setQuery] = useState('');
-  const [activeSurah, setActiveSurah] = useState(surahs[0]?.number ?? '1');
-  const [page, setPage] = useState<'read' | 'about' | 'privacy'>('read');
+  const [query, setQuery] = useState("");
+  const [activeSurah, setActiveSurah] = useState(surahs[0]?.number ?? "1");
+  const [page, setPage] = useState<"read" | "about" | "privacy">("read");
 
   const filtered = surahs.filter((surah) => {
     const q = query.trim().toLowerCase();
     return !q || `${surah.number} ${surah.name}`.toLowerCase().includes(q);
   });
 
-  const current = data[activeSurah] ?? data[surahs[0]?.number ?? '1'];
+  const current = data[activeSurah] ?? data[surahs[0]?.number ?? "1"];
 
   return (
     <div className="app-shell">
@@ -37,11 +41,11 @@ export default function App() {
           <h1>Maltese Quran reader</h1>
           <p className="lede">
             Clean, static, and simple. The site reads directly from local JSON so there is no
-            backend or Supabase layer to break deployment.
+            backend layer to break deployment.
           </p>
         </div>
         <div className="hero-badge">
-          <ShieldCheck size={18} />
+          <Shield size={18} />
           <span>Static-first launch base</span>
         </div>
       </header>
@@ -57,18 +61,18 @@ export default function App() {
       </section>
 
       <nav className="nav-row">
-        <button className={page === 'read' ? 'nav-chip active' : 'nav-chip'} onClick={() => setPage('read')}>
+        <button className={page === "read" ? "nav-chip active" : "nav-chip"} onClick={() => setPage("read")}>
           <BookOpen size={16} /> Reader
         </button>
-        <button className={page === 'about' ? 'nav-chip active' : 'nav-chip'} onClick={() => setPage('about')}>
+        <button className={page === "about" ? "nav-chip active" : "nav-chip"} onClick={() => setPage("about")}>
           <Info size={16} /> About
         </button>
-        <button className={page === 'privacy' ? 'nav-chip active' : 'nav-chip'} onClick={() => setPage('privacy')}>
-          <Info size={16} /> Privacy
+        <button className={page === "privacy" ? "nav-chip active" : "nav-chip"} onClick={() => setPage("privacy")}>
+          <Menu size={16} /> Privacy
         </button>
       </nav>
 
-      {page === 'read' && (
+      {page === "read" && (
         <main className="content-grid">
           <aside className="panel list-panel">
             <div className="panel-title">
@@ -79,7 +83,7 @@ export default function App() {
               {filtered.map((surah) => (
                 <button
                   key={surah.number}
-                  className={surah.number === activeSurah ? 'surah-item active' : 'surah-item'}
+                  className={surah.number === activeSurah ? "surah-item active" : "surah-item"}
                   onClick={() => setActiveSurah(surah.number)}
                 >
                   <strong>
@@ -108,7 +112,7 @@ export default function App() {
         </main>
       )}
 
-      {page === 'about' && (
+      {page === "about" && (
         <section className="panel page">
           <h2>About</h2>
           <p>
@@ -118,12 +122,12 @@ export default function App() {
         </section>
       )}
 
-      {page === 'privacy' && (
+      {page === "privacy" && (
         <section className="panel page">
           <h2>Privacy</h2>
           <p>
-            No Supabase, no user accounts, and no built-in tracking. The site serves static
-            content from the repo.
+            No user accounts and no built-in tracking. The site serves static content from the
+            repo.
           </p>
         </section>
       )}
