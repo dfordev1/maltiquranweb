@@ -1,11 +1,16 @@
 :root {
   color-scheme: light;
-  --bg: #f7f4ec;
-  --paper: #ffffff;
-  --border: #ddd6c8;
+  --page: #f3f0e4;
+  --paper: #f8f7ef;
+  --frame: #8ca529;
+  --frame-dark: #6c7f1e;
+  --header: #94181a;
+  --soft: #bddb31;
+  --border: #b9c08e;
   --text: #1f1b16;
-  --muted: #6f685f;
-  --ink: #111111;
+  --muted: #5e5a50;
+  --link: #143b88;
+  --line: #d8d3c1;
 }
 
 * {
@@ -20,9 +25,9 @@ body,
 
 body {
   margin: 0;
+  background: var(--page);
   color: var(--text);
-  background: var(--bg);
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: Tahoma, Verdana, Arial, sans-serif;
 }
 
 button,
@@ -31,130 +36,114 @@ input {
 }
 
 a {
-  color: inherit;
+  color: var(--link);
   text-decoration: none;
 }
 
 .app-shell {
-  width: min(1080px, calc(100% - 24px));
+  width: min(620px, calc(100% - 24px));
   margin: 0 auto;
-  padding: 12px 0 28px;
+  padding: 10px 0 18px;
 }
 
 .panel {
   background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  border: 1px solid var(--frame);
 }
 
-.hero {
+.site-header {
+  border: 1px solid var(--frame);
+  background: linear-gradient(#fbfbf4, #ece9d9);
+  margin-bottom: 8px;
+}
+
+.masthead {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
-  padding: 18px 18px 16px;
-  margin-bottom: 14px;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px 12px 8px;
+  border-bottom: 4px solid var(--header);
+}
+
+.masthead-title h1 {
+  margin: 2px 0 0;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 700;
+  color: #2c251f;
 }
 
 .eyebrow {
-  margin: 0 0 6px;
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--muted);
+  color: #6d685f;
+}
+
+.masthead-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  padding-top: 3px;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.masthead-links a {
+  color: var(--link);
+}
+
+.site-strip {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--soft);
+  color: #243000;
   font-size: 0.72rem;
-  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-top: 1px solid #e1eea3;
 }
 
-h1 {
-  margin: 0;
-  font-size: clamp(2rem, 4vw, 3.4rem);
-  line-height: 1.05;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+.site-strip span {
+  white-space: nowrap;
 }
 
-h2 {
-  margin: 0;
-  font-size: clamp(1.5rem, 3vw, 2.4rem);
-  line-height: 1.15;
-  font-weight: 700;
-}
-
-.lede {
-  max-width: 54ch;
-  margin: 10px 0 0;
-  color: var(--muted);
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
-.toolbar,
-.panel-title,
-.nav-chip,
-.page,
-.breadcrumb,
-.hero-actions {
+.searchbar {
   display: flex;
   align-items: center;
-}
-
-.hero-actions {
-  gap: 14px;
-  margin-top: 14px;
-  flex-wrap: wrap;
-}
-
-.text-link {
-  color: var(--ink);
-  font-size: 0.98rem;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.text-link.subtle {
-  color: var(--muted);
-}
-
-.toolbar {
-  gap: 10px;
-  padding: 12px 14px;
-  margin-bottom: 12px;
-  border: 1px solid var(--border);
-}
-
-.toolbar input {
-  width: 100%;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--text);
-}
-
-.nav-row {
-  display: flex;
   gap: 8px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
+  padding: 6px 8px;
+  margin-bottom: 8px;
+  background: #ece8db;
 }
 
-.nav-chip {
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--paper);
-  color: var(--muted);
-}
-
-.nav-chip.active {
-  background: var(--ink);
+.searchbar-label {
+  background: var(--header);
   color: #fff;
-  border-color: var(--ink);
+  font-size: 0.72rem;
+  padding: 6px 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.searchbar input {
+  flex: 1;
+  border: 1px solid #b5b09e;
+  background: #fff;
+  padding: 7px 8px;
 }
 
 .content-grid {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
-  gap: 12px;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 8px;
   align-items: start;
 }
 
@@ -162,122 +151,120 @@ h2 {
   grid-template-columns: minmax(0, 1fr);
 }
 
-.surah-grid .reader-panel {
-  min-height: 72vh;
-}
-
-.surah-grid .related-panel {
-  margin-top: 0;
-}
-
 .list-panel,
 .reader-panel,
 .page {
-  padding: 16px;
+  padding: 8px;
 }
 
-.panel-title {
-  gap: 8px;
-  margin-bottom: 10px;
-  font-size: 0.95rem;
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  background: var(--soft);
+  color: #304100;
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid #90a42d;
 }
 
 .list-caption,
 .surah-meta,
 .page-note {
-  margin: 0 0 12px;
+  margin: 8px 0 10px;
   color: var(--muted);
-  line-height: 1.6;
-  font-size: 0.95rem;
+  font-size: 0.84rem;
+  line-height: 1.5;
 }
 
 .surah-list {
   display: grid;
-  gap: 6px;
-  max-height: 74vh;
-  overflow: auto;
-  padding-right: 4px;
+  gap: 4px;
 }
 
 .surah-item {
   display: block;
-  padding: 10px 12px;
+  padding: 7px 8px;
   border: 1px solid transparent;
-  border-radius: 10px;
-  background: #fff;
+  background: #f9f8f2;
 }
 
 .surah-item:hover {
+  background: #fff;
   border-color: var(--border);
-  background: #fbfaf7;
 }
 
 .surah-item strong {
   display: block;
-  font-size: 0.98rem;
-  font-weight: 700;
+  font-size: 0.88rem;
   line-height: 1.35;
 }
 
 .surah-item span {
   display: block;
-  margin-top: 4px;
+  margin-top: 2px;
   color: var(--muted);
-  font-size: 0.88rem;
+  font-size: 0.76rem;
 }
 
 .breadcrumb {
-  gap: 8px;
-  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px;
+  font-size: 0.82rem;
   color: var(--muted);
-  font-size: 0.94rem;
 }
 
 .breadcrumb a {
-  color: var(--text);
-}
-
-.surah-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: flex-start;
-  margin-bottom: 14px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.surah-header h2 {
-  margin-top: 2px;
-}
-
-.page-landing {
-  min-height: 180px;
-  justify-content: center;
+  color: var(--link);
 }
 
 .reader-panel {
   min-height: 72vh;
 }
 
-.reader-panel .verses {
-  max-width: 760px;
+.surah-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.surah-header h2,
+.page h2 {
+  margin: 2px 0 0;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 1.7rem;
+  line-height: 1.1;
+}
+
+.text-link {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.text-link.subtle {
+  color: var(--muted);
 }
 
 .verses {
   display: grid;
-  gap: 0;
 }
 
 .verse {
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
-  gap: 12px;
-  align-items: start;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
 }
 
 .verse:last-child {
@@ -287,36 +274,67 @@ h2 {
 .verse-number {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
+  width: 28px;
+  height: 28px;
   border: 1px solid var(--border);
-  background: #fbfaf7;
-  color: var(--ink);
-  font-size: 0.85rem;
+  background: #fff;
+  color: #3d362d;
+  font-size: 0.74rem;
   font-weight: 700;
 }
 
 .verse p {
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.9;
+  font-size: 0.95rem;
+  line-height: 1.8;
 }
 
 .page {
+  display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
+  gap: 8px;
+  min-height: 160px;
 }
 
-.page h2 {
-  margin-bottom: 2px;
+.page-landing {
+  justify-content: center;
 }
 
-@media (max-width: 900px) {
-  .hero,
-  .surah-header {
+.nav-row,
+.hero-actions {
+  display: none;
+}
+
+.site-footer {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 7px 10px;
+  background: var(--header);
+  color: #fff;
+  font-size: 0.78rem;
+}
+
+.site-footer a {
+  color: #fff;
+}
+
+.site-footer span {
+  opacity: 0.9;
+}
+
+@media (max-width: 760px) {
+  .app-shell {
+    width: min(100% - 16px, 620px);
+  }
+
+  .masthead {
     flex-direction: column;
+  }
+
+  .site-strip {
+    flex-wrap: wrap;
   }
 
   .content-grid {
@@ -325,5 +343,9 @@ h2 {
 
   .reader-panel {
     min-height: auto;
+  }
+
+  .surah-header {
+    flex-direction: column;
   }
 }

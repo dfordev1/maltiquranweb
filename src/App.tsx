@@ -94,23 +94,36 @@ function setSeo({ title, description, canonical }: { title: string; description:
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="app-shell">
-      <header className="hero panel">
-        <div>
-          <p className="eyebrow">Il-Quran bil-Malti</p>
-          <h1>Maltese Quran</h1>
-          <p className="lede">Read the Maltese Quran in a plain, classic layout.</p>
-          <div className="hero-actions">
-            <Link className="text-link" to="/">
-              Open surahs
-            </Link>
-            <a className="text-link subtle" href={playStoreUrl} target="_blank" rel="noreferrer">
+    <div className="app-shell retro-shell">
+      <header className="site-header">
+        <div className="masthead">
+          <div className="masthead-title">
+            <p className="eyebrow">Il-Quran bil-Malti</p>
+            <h1>Maltese Quran</h1>
+          </div>
+          <div className="masthead-links">
+            <Link to="/">Home</Link>
+            <Link to="/about">About</Link>
+            <Link to="/privacy">Privacy</Link>
+            <a href={playStoreUrl} target="_blank" rel="noreferrer">
               Android app
             </a>
           </div>
         </div>
+        <div className="site-strip">
+          <span>Simple reading layout</span>
+          <span>Static-first</span>
+          <span>Plain Maltese text</span>
+        </div>
       </header>
       {children}
+      <footer className="site-footer panel">
+        <Link to="/">Mappa tas-Sit</Link>
+        <span>|</span>
+        <Link to="/about">About</Link>
+        <span>|</span>
+        <Link to="/privacy">Privacy</Link>
+      </footer>
     </div>
   );
 }
@@ -133,8 +146,9 @@ function HomePage() {
 
   return (
     <Shell>
-      <section className="toolbar panel">
-        <Search size={18} />
+      <section className="searchbar panel">
+        <div className="searchbar-label">Search</div>
+        <Search size={16} />
         <input
           aria-label="Search surahs"
           defaultValue={q}
@@ -148,25 +162,13 @@ function HomePage() {
         />
       </section>
 
-      <nav className="nav-row">
-        <NavLink className={({ isActive }) => (isActive ? "nav-chip active" : "nav-chip")} to="/">
-          <Home size={16} /> Home
-        </NavLink>
-        <NavLink className={({ isActive }) => (isActive ? "nav-chip active" : "nav-chip")} to="/about">
-          <Info size={16} /> About
-        </NavLink>
-        <NavLink className={({ isActive }) => (isActive ? "nav-chip active" : "nav-chip")} to="/privacy">
-          <Info size={16} /> Privacy
-        </NavLink>
-      </nav>
-
       <main className="content-grid home-grid">
         <aside className="panel list-panel">
-          <div className="panel-title">
-            <BookOpen size={18} />
+          <div className="section-head">
+            <BookOpen size={16} />
             <span>Surahs</span>
           </div>
-          <p className="list-caption">Select a surah.</p>
+          <p className="list-caption">Pick a chapter.</p>
           <div className="surah-list">
             {filtered.map((surah) => (
               <Link key={surah.number} to={`/surah/${surah.number}-${surah.slug}`} className="surah-item">
@@ -180,15 +182,15 @@ function HomePage() {
         </aside>
 
         <article className="panel reader-panel">
-          <div className="panel-title">
-            <BookOpen size={18} />
-            <span>Read</span>
+          <div className="section-head">
+            <BookOpen size={16} />
+            <span>Welcome</span>
           </div>
           <div className="page page-landing">
-            <h2>Choose a chapter from the left.</h2>
+            <h2>Select a surah to begin.</h2>
             <div className="page-note">
               <ChevronRight size={14} />
-              <span>Each chapter has its own page and clean title.</span>
+              <span>The site opens each chapter on its own page.</span>
             </div>
           </div>
         </article>
@@ -233,18 +235,6 @@ function SurahPage() {
         <span>{surah.name}</span>
       </div>
 
-      <nav className="nav-row">
-        <NavLink className={({ isActive }) => (isActive ? "nav-chip active" : "nav-chip")} to="/">
-          <Home size={16} /> Home
-        </NavLink>
-        <NavLink className={({ isActive }) => (isActive ? "nav-chip active" : "nav-chip")} to="/about">
-          <Info size={16} /> About
-        </NavLink>
-        <NavLink className={({ isActive }) => (isActive ? "nav-chip active" : "nav-chip")} to="/privacy">
-          <Info size={16} /> Privacy
-        </NavLink>
-      </nav>
-
       <main className="content-grid surah-grid">
         <article className="panel reader-panel">
           <div className="surah-header">
@@ -268,7 +258,7 @@ function SurahPage() {
         </article>
 
         <aside className="panel list-panel related-panel">
-          <div className="panel-title">
+          <div className="section-head">
             <Shield size={18} />
             <span>More surahs</span>
           </div>
