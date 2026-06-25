@@ -171,7 +171,7 @@ function HomePage() {
             <span>Surahs</span>
           </div>
           <div className="surah-list">
-            {filtered.slice(0, 8).map((surah) => (
+            {filtered.map((surah) => (
               <Link key={surah.number} to={`/surah/${surah.number}-${surah.slug}`} className="surah-item">
                 <strong>{surah.name}</strong>
                 <span>{surah.verseCount} verses</span>
@@ -182,7 +182,6 @@ function HomePage() {
 
         <article className="panel reader-panel landing-panel">
           <div className="page page-landing">
-            <p className="chapter-label">JOHN 1</p>
             <h2>Select a surah</h2>
             <div className="page-note">
               <ChevronRight size={14} />
