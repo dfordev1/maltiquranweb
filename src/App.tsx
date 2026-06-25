@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
-import { Link, NavLink, Route, Routes, useLocation, useParams } from "react-router-dom";
-import { BookOpen, Home, Info, Search, Shield, ChevronRight, Smartphone } from "lucide-react";
+import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
+import { BookOpen, ChevronLeft, ChevronRight, Globe, Menu, Search, User, Volume2 } from "lucide-react";
 
 type Verse = { translation: string };
 type Surah = { name: string; verses: Record<string, Verse> };
@@ -94,38 +94,34 @@ function setSeo({ title, description, canonical }: { title: string; description:
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="app-shell retro-shell">
-      <header className="site-header">
-        <div className="masthead">
-          <div className="masthead-title">
-            <p className="eyebrow">Il-Quran bil-Malti</p>
-            <h1>Maltese Quran</h1>
-          </div>
-          <div className="masthead-links">
-            <span>English</span>
-            <span>Malti</span>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-            <Link to="/privacy">Privacy</Link>
-            <a href={playStoreUrl} target="_blank" rel="noreferrer">
-              Android app
-            </a>
-          </div>
-        </div>
-        <div className="site-strip">
-          <span>Simple reading layout</span>
-          <span>Static-first</span>
-          <span>Plain Maltese text</span>
+    <div className="app-shell bible-shell">
+      <header className="topbar">
+        <div className="brand">Bible App</div>
+        <nav className="topnav">
+          <Link to="/">Bible</Link>
+          <a href="#plans">Plans</a>
+          <a href="#videos">Videos</a>
+        </nav>
+        <form className="search-pill" onSubmit={(event) => event.preventDefault()}>
+          <Search size={18} />
+          <input aria-label="Search verses, topics, and questions" placeholder="Search verses, topics, and questions..." />
+        </form>
+        <div className="top-actions">
+          <a className="app-link" href={playStoreUrl} target="_blank" rel="noreferrer">
+            Get the app
+          </a>
+          <button type="button" className="icon-btn" aria-label="Language">
+            <Globe size={22} />
+          </button>
+          <button type="button" className="icon-btn" aria-label="Menu">
+            <Menu size={22} />
+          </button>
+          <button type="button" className="icon-btn" aria-label="Account">
+            <User size={22} />
+          </button>
         </div>
       </header>
       {children}
-      <footer className="site-footer panel">
-        <Link to="/">Mappa tas-Sit</Link>
-        <span>|</span>
-        <Link to="/about">About</Link>
-        <span>|</span>
-        <Link to="/privacy">Privacy</Link>
-      </footer>
     </div>
   );
 }
@@ -148,21 +144,25 @@ function HomePage() {
 
   return (
     <Shell>
-      <section className="searchbar panel">
-        <div className="searchbar-label">Search</div>
-        <Search size={16} />
-        <input
-          aria-label="Search surahs"
-          defaultValue={q}
-          onChange={(event) => {
-            const url = new URL(window.location.href);
-            if (event.target.value.trim()) url.searchParams.set("q", event.target.value);
-            else url.searchParams.delete("q");
-            window.history.replaceState({}, "", `${url.pathname}${url.search}`);
-          }}
-          placeholder="Search surah number or name"
-        />
-      </section>
+      <div className="toolbar-row">
+        <select className="select-box" defaultValue="Surahs" aria-label="Select book">
+          <option>Surahs</option>
+        </select>
+        <select className="select-box" defaultValue="Malti" aria-label="Select version">
+          <option>Malti</option>
+        </select>
+        <div className="utility-icons">
+          <span className="parallel-link">
+            <BookOpen size={14} /> Parallel
+          </span>
+          <button type="button" className="circle-btn" aria-label="Audio">
+            <Volume2 size={18} />
+          </button>
+          <button type="button" className="circle-btn" aria-label="Text size">
+            <span className="aa">AA</span>
+          </button>
+        </div>
+      </div>
 
       <main className="content-grid home-grid">
         <aside className="panel list-panel">
@@ -170,25 +170,19 @@ function HomePage() {
             <BookOpen size={16} />
             <span>Surahs</span>
           </div>
-          <p className="list-caption">Pick a chapter.</p>
           <div className="surah-list">
-            {filtered.map((surah) => (
+            {filtered.slice(0, 8).map((surah) => (
               <Link key={surah.number} to={`/surah/${surah.number}-${surah.slug}`} className="surah-item">
-                <strong>
-                  {surah.number}. {surah.name}
-                </strong>
+                <strong>{surah.name}</strong>
                 <span>{surah.verseCount} verses</span>
               </Link>
             ))}
           </div>
         </aside>
 
-        <article className="panel reader-panel">
-          <div className="section-head">
-            <BookOpen size={16} />
-            <span>Welcome</span>
-          </div>
+        <article className="panel reader-panel landing-panel">
           <div className="page page-landing">
+            <p className="chapter-label">JOHN 1</p>
             <h2>Select a surah</h2>
             <div className="page-note">
               <ChevronRight size={14} />
@@ -231,23 +225,17 @@ function SurahPage() {
 
   return (
     <Shell>
-      <div className="breadcrumb">
-        <Link to="/">Home</Link>
-        <ChevronRight size={14} />
-        <span>{surah.name}</span>
-      </div>
-
       <main className="content-grid surah-grid">
+        <button className="nav-arrow left" type="button" aria-label="Previous chapter">
+          <ChevronLeft size={34} />
+        </button>
+
         <article className="panel reader-panel">
           <div className="surah-header">
             <div>
-              <p className="eyebrow">Surah {number}</p>
+              <p className="chapter-label">{surah.name.toUpperCase()}</p>
               <h2>{surah.name}</h2>
-              <p className="surah-meta">{Object.keys(surah.verses).length} verses</p>
             </div>
-            <a className="text-link subtle" href={playStoreUrl} target="_blank" rel="noreferrer">
-              Android app
-            </a>
           </div>
           <div className="verses">
             {Object.entries(surah.verses).map(([verseNumber, verse]) => (
@@ -259,23 +247,9 @@ function SurahPage() {
           </div>
         </article>
 
-        <aside className="panel list-panel related-panel">
-          <div className="section-head">
-            <Shield size={18} />
-            <span>More surahs</span>
-          </div>
-          <p className="list-caption">Jump to nearby chapters or go back home.</p>
-          <div className="surah-list">
-            {surahs.slice(Math.max(0, Number(number) - 3), Number(number) + 2).map((item) => (
-              <Link key={item.number} className="surah-item" to={`/surah/${item.number}-${item.slug}`}>
-                <strong>
-                  {item.number}. {item.name}
-                </strong>
-                <span>{item.verseCount} verses</span>
-              </Link>
-            ))}
-          </div>
-        </aside>
+        <button className="nav-arrow right" type="button" aria-label="Next chapter">
+          <ChevronRight size={34} />
+        </button>
       </main>
     </Shell>
   );
