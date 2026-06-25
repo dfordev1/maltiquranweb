@@ -190,6 +190,9 @@ button {
   width: min(860px, calc(100% - 96px));
   min-height: 68vh;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .landing-panel {
@@ -240,7 +243,7 @@ button {
 }
 
 .verses {
-  max-width: 620px;
+  width: min(620px, 100%);
   margin: 0 auto;
 }
 
