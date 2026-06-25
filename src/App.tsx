@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BookOpen, Menu, Search, Shield, Info } from "lucide-react";
 
 type Verse = { translation: string };
@@ -36,6 +36,30 @@ export default function App() {
   });
 
   const current = data[activeSurah] ?? data[surahs[0]?.number ?? "1"];
+
+  useEffect(() => {
+    if (!current) return;
+    const title = `Surah ${current.name} | Il-Quran bil-Malti`;
+    document.title = title;
+    const description = `Read ${current.name} in Maltese on Il-Quran bil-Malti.`;
+    const canonicalUrl = "https://maltiquran.com/";
+    const upsertMeta = (selector: string, attr: "name" | "property", key: string, value: string) => {
+      let tag = document.head.querySelector<HTMLMetaElement>(`${selector}[${attr}="${key}"]`);
+      if (!tag) {
+        tag = document.createElement("meta");
+        tag.setAttribute(attr, key);
+        document.head.appendChild(tag);
+      }
+      tag.content = value;
+    };
+
+    upsertMeta('meta', 'name', 'description', description);
+    upsertMeta('meta', 'property', 'og:title', title);
+    upsertMeta('meta', 'property', 'og:description', description);
+    upsertMeta('meta', 'property', 'og:url', canonicalUrl);
+    upsertMeta('meta', 'name', 'twitter:title', title);
+    upsertMeta('meta', 'name', 'twitter:description', description);
+  }, [current]);
 
   if (surahs.length === 0) {
     return (
