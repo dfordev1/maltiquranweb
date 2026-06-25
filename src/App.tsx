@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { Link, NavLink, Route, Routes, useLocation, useParams } from "react-router-dom";
-import { BookOpen, Home, Info, Search, Shield, ChevronRight } from "lucide-react";
+import { BookOpen, Home, Info, Search, Shield, ChevronRight, Smartphone } from "lucide-react";
 
 type Verse = { translation: string };
 type Surah = { name: string; verses: Record<string, Verse> };
@@ -29,6 +29,8 @@ const surahs: SurahEntry[] = Object.entries(data).map(([number, surah]) => ({
   verseCount: Object.keys(surah.verses).length,
   slug: slugify(surah.name),
 }));
+
+const playStoreUrl = "https://play.google.com/store/apps/details?id=com.malti.quran";
 
 function slugify(value: string) {
   return value
@@ -77,10 +79,29 @@ function Shell({ children }: { children: React.ReactNode }) {
             Clean, static, and simple. The site reads directly from local JSON with real surah
             pages for better discovery.
           </p>
+          <div className="hero-actions">
+            <Link className="primary-action" to="/">
+              Start reading
+            </Link>
+            <a className="secondary-action" href={playStoreUrl} target="_blank" rel="noreferrer">
+              <Smartphone size={16} /> Get the Android app
+            </a>
+          </div>
         </div>
-        <div className="hero-badge">
-          <Shield size={18} />
-          <span>Static-first launch base</span>
+        <div className="hero-stack">
+          <div className="hero-badge">
+            <Shield size={18} />
+            <span>Static-first launch base</span>
+          </div>
+          <a className="app-card" href={playStoreUrl} target="_blank" rel="noreferrer">
+            <div className="app-card-top">
+              <Smartphone size={18} />
+              <span>Android app</span>
+            </div>
+            <strong>Available on Google Play</strong>
+            <p>Continue reading on mobile with the companion app.</p>
+            <span className="app-card-link">Open Play Store <ChevronRight size={14} /></span>
+          </a>
         </div>
       </header>
       {children}
@@ -139,6 +160,7 @@ function HomePage() {
             <BookOpen size={18} />
             <span>Surahs</span>
           </div>
+          <p className="list-caption">Pick a surah to open its dedicated page.</p>
           <div className="surah-list">
             {filtered.map((surah) => (
               <Link key={surah.number} to={`/surah/${surah.number}-${surah.slug}`} className="surah-item">
@@ -156,12 +178,16 @@ function HomePage() {
             <BookOpen size={18} />
             <span>Read a surah</span>
           </div>
-          <div className="page">
+          <div className="page page-landing">
             <h2>Select a surah from the list</h2>
             <p>
               Each surah now has its own crawlable URL so search engines can index the content more
               effectively.
             </p>
+            <div className="page-note">
+              <ChevronRight size={14} />
+              <span>Open any surah to read verse-by-verse in a focused layout.</span>
+            </div>
           </div>
         </article>
       </main>
@@ -199,6 +225,12 @@ function SurahPage() {
 
   return (
     <Shell>
+      <div className="breadcrumb">
+        <Link to="/">Home</Link>
+        <ChevronRight size={14} />
+        <span>{surah.name}</span>
+      </div>
+
       <nav className="nav-row">
         <NavLink className={({ isActive }) => (isActive ? "nav-chip active" : "nav-chip")} to="/">
           <Home size={16} /> Home
@@ -213,11 +245,15 @@ function SurahPage() {
 
       <main className="content-grid">
         <article className="panel reader-panel">
-          <div className="panel-title">
-            <BookOpen size={18} />
-            <span>
-              {number}. {surah.name}
-            </span>
+          <div className="surah-header">
+            <div>
+              <p className="eyebrow">Surah {number}</p>
+              <h2>{surah.name}</h2>
+              <p className="surah-meta">{Object.keys(surah.verses).length} verses</p>
+            </div>
+            <a className="secondary-action" href={playStoreUrl} target="_blank" rel="noreferrer">
+              <Smartphone size={16} /> Android app
+            </a>
           </div>
           <div className="verses">
             {Object.entries(surah.verses).map(([verseNumber, verse]) => (
@@ -232,8 +268,9 @@ function SurahPage() {
         <aside className="panel list-panel">
           <div className="panel-title">
             <Shield size={18} />
-            <span>Nearby links</span>
+            <span>More surahs</span>
           </div>
+          <p className="list-caption">Jump to nearby chapters or go back home.</p>
           <div className="surah-list">
             {surahs.slice(Math.max(0, Number(number) - 3), Number(number) + 2).map((item) => (
               <Link key={item.number} className="surah-item" to={`/surah/${item.number}-${item.slug}`}>
