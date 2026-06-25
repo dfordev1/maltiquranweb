@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
+import { Link, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { BookOpen, ChevronLeft, ChevronRight, Globe, Menu, Search, User, Volume2 } from "lucide-react";
 
 type Verse = { translation: string };
@@ -128,6 +128,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 
 function HomePage() {
   const { search } = useLocation();
+  const navigate = useNavigate();
   const q = new URLSearchParams(search).get("q")?.trim().toLowerCase() ?? "";
   const filtered = useMemo(
     () => surahs.filter((surah) => !q || `${surah.number} ${surah.name}`.toLowerCase().includes(q)),
@@ -145,11 +146,27 @@ function HomePage() {
   return (
     <Shell>
       <div className="toolbar-row">
-        <select className="select-box" defaultValue="Surahs" aria-label="Select book">
-          <option>Surahs</option>
+        <select
+          className="select-box"
+          aria-label="Select surah"
+          defaultValue=""
+          onChange={(event) => {
+            if (!event.target.value) return;
+            navigate(`/surah/${event.target.value}`);
+          }}
+        >
+          <option value="" disabled>
+            John 1
+          </option>
+          {surahs.map((surah) => (
+            <option key={surah.number} value={`${surah.number}-${surah.slug}`}>
+              {surah.number}. {surah.name}
+            </option>
+          ))}
         </select>
-        <select className="select-box" defaultValue="Malti" aria-label="Select version">
-          <option>Malti</option>
+        <select className="select-box" aria-label="Select version" defaultValue="Malti">
+          <option value="Malti">Malti</option>
+          <option value="NIV">NIV</option>
         </select>
         <div className="utility-icons">
           <span className="parallel-link">
@@ -196,6 +213,7 @@ function HomePage() {
 
 function SurahPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const number = id?.split("-")[0] ?? "";
   const surah = normalizedData[number];
 
@@ -225,6 +243,36 @@ function SurahPage() {
   return (
     <Shell>
       <main className="content-grid surah-grid">
+        <div className="toolbar-row page-toolbar">
+          <select
+            className="select-box"
+            aria-label="Select surah"
+            value={id ?? ""}
+            onChange={(event) => navigate(`/surah/${event.target.value}`)}
+          >
+            {surahs.map((item) => (
+              <option key={item.number} value={`${item.number}-${item.slug}`}>
+                {item.number}. {item.name}
+              </option>
+            ))}
+          </select>
+          <select className="select-box" aria-label="Select version" defaultValue="Malti">
+            <option value="Malti">Malti</option>
+            <option value="NIV">NIV</option>
+          </select>
+          <div className="utility-icons">
+            <span className="parallel-link">
+              <BookOpen size={14} /> Parallel
+            </span>
+            <button type="button" className="circle-btn" aria-label="Audio">
+              <Volume2 size={18} />
+            </button>
+            <button type="button" className="circle-btn" aria-label="Text size">
+              <span className="aa">AA</span>
+            </button>
+          </div>
+        </div>
+
         <button className="nav-arrow left" type="button" aria-label="Previous chapter">
           <ChevronLeft size={34} />
         </button>
