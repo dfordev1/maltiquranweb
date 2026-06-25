@@ -154,9 +154,9 @@ function HomePage() {
             if (!event.target.value) return;
             navigate(`/surah/${event.target.value}`);
           }}
-        >
+          >
           <option value="" disabled>
-            John 1
+            Choose a surah
           </option>
           {surahs.map((surah) => (
             <option key={surah.number} value={`${surah.number}-${surah.slug}`}>
