@@ -102,6 +102,8 @@ function Shell({ children }: { children: React.ReactNode }) {
             <h1>Maltese Quran</h1>
           </div>
           <div className="masthead-links">
+            <span>English</span>
+            <span>Malti</span>
             <Link to="/">Home</Link>
             <Link to="/about">About</Link>
             <Link to="/privacy">Privacy</Link>
@@ -114,6 +116,7 @@ function Shell({ children }: { children: React.ReactNode }) {
           <span>Simple reading layout</span>
           <span>Static-first</span>
           <span>Plain Maltese text</span>
+          <span>Archive-inspired frame</span>
         </div>
       </header>
       {children}
@@ -187,7 +190,7 @@ function HomePage() {
             <span>Welcome</span>
           </div>
           <div className="page page-landing">
-            <h2>Select a surah to begin.</h2>
+            <h2>Select a surah to begin</h2>
             <div className="page-note">
               <ChevronRight size={14} />
               <span>The site opens each chapter on its own page.</span>

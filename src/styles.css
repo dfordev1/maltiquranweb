@@ -11,6 +11,7 @@
   --muted: #5e5a50;
   --link: #143b88;
   --line: #d8d3c1;
+  --shadow: rgba(92, 84, 51, 0.1);
 }
 
 * {
@@ -55,6 +56,7 @@ a {
   border: 1px solid var(--frame);
   background: linear-gradient(#fbfbf4, #ece9d9);
   margin-bottom: 8px;
+  box-shadow: 0 1px 0 var(--shadow);
 }
 
 .masthead {
@@ -92,10 +94,15 @@ a {
   padding-top: 3px;
   font-size: 0.78rem;
   text-transform: uppercase;
+  line-height: 1.2;
 }
 
 .masthead-links a {
   color: var(--link);
+}
+
+.masthead-links span {
+  color: var(--muted);
 }
 
 .site-strip {
@@ -122,6 +129,7 @@ a {
   padding: 6px 8px;
   margin-bottom: 8px;
   background: #ece8db;
+  border: 1px solid #a7a089;
 }
 
 .searchbar-label {
@@ -157,6 +165,11 @@ a {
   padding: 8px;
 }
 
+.list-panel,
+.reader-panel {
+  box-shadow: 0 1px 0 var(--shadow);
+}
+
 .section-head {
   display: flex;
   align-items: center;
@@ -190,6 +203,7 @@ a {
   padding: 7px 8px;
   border: 1px solid transparent;
   background: #f9f8f2;
+  line-height: 1.25;
 }
 
 .surah-item:hover {
@@ -225,6 +239,7 @@ a {
 
 .reader-panel {
   min-height: 72vh;
+  border: 1px solid #a8a279;
 }
 
 .surah-header {
@@ -265,6 +280,10 @@ a {
   gap: 8px;
   padding: 10px 0;
   border-bottom: 1px solid var(--line);
+}
+
+.verse:nth-child(even) {
+  background: rgba(255, 255, 255, 0.35);
 }
 
 .verse:last-child {
@@ -314,6 +333,7 @@ a {
   background: var(--header);
   color: #fff;
   font-size: 0.78rem;
+  border-color: #7f1114;
 }
 
 .site-footer a {
@@ -335,6 +355,10 @@ a {
 
   .site-strip {
     flex-wrap: wrap;
+  }
+
+  .site-strip span {
+    white-space: normal;
   }
 
   .content-grid {
