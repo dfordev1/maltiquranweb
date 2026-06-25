@@ -176,9 +176,7 @@ function HomePage() {
 
       <main className="content-grid home-grid">
         <article className="panel reader-panel landing-panel">
-          <div className="page page-landing">
-            <h2>{normalizedData["1"]?.name ?? "1"}</h2>
-          </div>
+          <div className="page page-landing" />
         </article>
       </main>
     </Shell>
