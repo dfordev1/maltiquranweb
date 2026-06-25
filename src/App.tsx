@@ -16,6 +16,30 @@ const data = Object.fromEntries(
     .flatMap(([, module]) => Object.entries(module as Record<string, Surah>)),
 ) as Record<string, Surah>;
 
+function fixMojibake(value: string) {
+  try {
+    return decodeURIComponent(escape(value));
+  } catch {
+    return value;
+  }
+}
+
+function normalizeSurah(surah: Surah): Surah {
+  return {
+    name: fixMojibake(surah.name),
+    verses: Object.fromEntries(
+      Object.entries(surah.verses).map(([verseNumber, verse]) => [
+        verseNumber,
+        { translation: fixMojibake(verse.translation) },
+      ]),
+    ),
+  };
+}
+
+const normalizedData = Object.fromEntries(
+  Object.entries(data).map(([number, surah]) => [number, normalizeSurah(surah)]),
+) as Record<string, Surah>;
+
 type SurahEntry = {
   number: string;
   name: string;
@@ -23,7 +47,7 @@ type SurahEntry = {
   slug: string;
 };
 
-const surahs: SurahEntry[] = Object.entries(data).map(([number, surah]) => ({
+const surahs: SurahEntry[] = Object.entries(normalizedData).map(([number, surah]) => ({
   number,
   name: surah.name,
   verseCount: Object.keys(surah.verses).length,
@@ -198,7 +222,7 @@ function HomePage() {
 function SurahPage() {
   const { id } = useParams();
   const number = id?.split("-")[0] ?? "";
-  const surah = data[number];
+  const surah = normalizedData[number];
 
   useEffect(() => {
     if (!surah) return;
