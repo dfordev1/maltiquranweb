@@ -238,7 +238,7 @@ button {
 }
 
 .verses {
-  max-width: 660px;
+  max-width: 620px;
   margin: 0 auto;
 }
 
@@ -249,6 +249,7 @@ button {
   text-align: justify;
   text-justify: inter-word;
   text-align-last: left;
+  margin: 0 auto;
 }
 
 .verse-number {
@@ -407,6 +408,10 @@ button {
 
   .verse {
     text-align: left;
+  }
+
+  .verses {
+    max-width: 100%;
   }
 
   .parallel-texts p {
