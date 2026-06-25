@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { BookOpen, ChevronLeft, ChevronRight, Globe, Menu, Search, User, Volume2 } from "lucide-react";
 
@@ -15,6 +15,20 @@ const data = Object.fromEntries(
     .sort(([left], [right]) => left.localeCompare(right))
     .flatMap(([, module]) => Object.entries(module as Record<string, Surah>)),
 ) as Record<string, Surah>;
+
+const parallelModules = import.meta.glob("./data/parallel/*.json", {
+  eager: true,
+  import: "default",
+});
+
+type ParallelVerse = { ArabicPersianScript?: string; Translation?: string };
+type ParallelSurah = { name?: string; verses: Record<string, ParallelVerse> };
+
+const parallelData = Object.fromEntries(
+  Object.entries(parallelModules)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .flatMap(([, module]) => Object.entries(module as Record<string, ParallelSurah>)),
+) as Record<string, ParallelSurah>;
 
 function fixMojibake(value: string) {
   try {
@@ -36,9 +50,28 @@ function normalizeSurah(surah: Surah): Surah {
   };
 }
 
+function normalizeParallelSurah(surah: ParallelSurah): ParallelSurah {
+  return {
+    name: fixMojibake(surah.name ?? ""),
+    verses: Object.fromEntries(
+      Object.entries(surah.verses).map(([verseNumber, verse]) => [
+        verseNumber,
+        {
+          ArabicPersianScript: fixMojibake(verse.ArabicPersianScript ?? ""),
+          Translation: fixMojibake(verse.Translation ?? ""),
+        },
+      ]),
+    ),
+  };
+}
+
 const normalizedData = Object.fromEntries(
   Object.entries(data).map(([number, surah]) => [number, normalizeSurah(surah)]),
 ) as Record<string, Surah>;
+
+const normalizedParallelData = Object.fromEntries(
+  Object.entries(parallelData).map(([number, surah]) => [number, normalizeParallelSurah(surah)]),
+) as Record<string, ParallelSurah>;
 
 type SurahEntry = {
   number: string;
@@ -46,6 +79,8 @@ type SurahEntry = {
   verseCount: number;
   slug: string;
 };
+
+type ReaderMode = "single" | "parallel";
 
 const surahs: SurahEntry[] = Object.entries(normalizedData).map(([number, surah]) => ({
   number,
@@ -55,6 +90,7 @@ const surahs: SurahEntry[] = Object.entries(normalizedData).map(([number, surah]
 }));
 
 const playStoreUrl = "https://play.google.com/store/apps/details?id=com.malti.quran";
+const defaultSurahId = "1-al-fatiha";
 
 function slugify(value: string) {
   return value
@@ -124,6 +160,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 function HomePage() {
   const { search } = useLocation();
   const navigate = useNavigate();
+  const [mode, setMode] = useState<ReaderMode>("single");
   const q = new URLSearchParams(search).get("q")?.trim().toLowerCase() ?? "";
   const filtered = useMemo(
     () => surahs.filter((surah) => !q || `${surah.number} ${surah.name}`.toLowerCase().includes(q)),
@@ -140,17 +177,26 @@ function HomePage() {
 
   return (
     <Shell>
+      <div className="mode-row">
+        <button type="button" className={mode === "single" ? "mode-pill active" : "mode-pill"} onClick={() => setMode("single")}>
+          Reader
+        </button>
+        <button type="button" className={mode === "parallel" ? "mode-pill active" : "mode-pill"} onClick={() => setMode("parallel")}>
+          Parallel
+        </button>
+      </div>
+
       <div className="toolbar-row">
         <select
           className="select-box"
           aria-label="Select chapter"
-          defaultValue="1-al-fatiha"
+          defaultValue={defaultSurahId}
           onChange={(event) => {
             if (!event.target.value) return;
             navigate(`/surah/${event.target.value}`);
           }}
         >
-          <option value="1-al-fatiha">Chapter</option>
+          <option value={defaultSurahId}>Chapter</option>
           {surahs.map((surah) => (
             <option key={surah.number} value={`${surah.number}-${surah.slug}`}>
               {surah.number}. {surah.name}
@@ -174,7 +220,7 @@ function HomePage() {
         </div>
       </div>
 
-      <main className="content-grid home-grid">
+      <main className={mode === "parallel" ? "content-grid home-grid parallel-home" : "content-grid home-grid"}>
         <article className="panel reader-panel landing-panel">
           <div className="page page-landing">
             <h2>Select a chapter</h2>
@@ -182,6 +228,7 @@ function HomePage() {
               <ChevronRight size={14} />
               <span>Each chapter opens on its own page.</span>
             </div>
+            {mode === "parallel" ? <p className="parallel-hint">Parallel mode opens two panes on chapter pages.</p> : null}
           </div>
         </article>
       </main>
@@ -194,9 +241,11 @@ function SurahPage() {
   const navigate = useNavigate();
   const number = id?.split("-")[0] ?? "";
   const surah = normalizedData[number];
+  const [mode, setMode] = useState<ReaderMode>("parallel");
   const currentIndex = surahs.findIndex((item) => item.number === number);
   const previousSurah = currentIndex > 0 ? surahs[currentIndex - 1] : null;
   const nextSurah = currentIndex >= 0 && currentIndex < surahs.length - 1 ? surahs[currentIndex + 1] : null;
+  const parallelSurah = normalizedParallelData[number];
 
   useEffect(() => {
     if (!surah) return;
@@ -223,6 +272,15 @@ function SurahPage() {
 
   return (
     <Shell>
+      <div className="mode-row">
+        <button type="button" className={mode === "single" ? "mode-pill" : "mode-pill"} onClick={() => setMode("single")}>
+          Reader
+        </button>
+        <button type="button" className={mode === "parallel" ? "mode-pill active" : "mode-pill"} onClick={() => setMode("parallel")}>
+          Parallel
+        </button>
+      </div>
+
       <main className="content-grid surah-grid">
         <div className="toolbar-row page-toolbar">
           <select
@@ -249,6 +307,9 @@ function SurahPage() {
             <span className="parallel-link">
               <BookOpen size={14} /> Parallel
             </span>
+            <button type="button" className={mode === "parallel" ? "mode-pill active" : "mode-pill"} onClick={() => setMode(mode === "parallel" ? "single" : "parallel")}>
+              {mode === "parallel" ? "Exit Parallel Mode" : "Parallel Mode"}
+            </button>
             <button type="button" className="circle-btn" aria-label="Audio">
               <Volume2 size={18} />
             </button>
@@ -258,44 +319,83 @@ function SurahPage() {
           </div>
         </div>
 
-        <button
-          className="nav-arrow left"
-          type="button"
-          aria-label="Previous chapter"
-          disabled={!previousSurah}
-          onClick={() => previousSurah && navigate(`/surah/${previousSurah.number}-${previousSurah.slug}`)}
-        >
-          <ChevronLeft size={22} />
-        </button>
+        <div className={mode === "parallel" ? "reader-stage parallel" : "reader-stage"}>
+          <button
+            className="nav-arrow left"
+            type="button"
+            aria-label="Previous chapter"
+            disabled={!previousSurah}
+            onClick={() => previousSurah && navigate(`/surah/${previousSurah.number}-${previousSurah.slug}`)}
+          >
+            <ChevronLeft size={22} />
+          </button>
 
-        <article className="panel reader-panel">
-          <div className="surah-header">
-            <div>
-              <p className="chapter-label">Chapter {number}</p>
-              <h2>{surah.name}</h2>
+          {mode === "parallel" ? (
+            <div className="parallel-grid">
+              <ReaderPane title={`Chapter ${number}`} surah={surah} />
+              <ReaderPane title={`Chapter ${number}`} surah={surah} />
             </div>
-          </div>
-          <div className="verses">
-            {Object.entries(surah.verses).map(([verseNumber, verse]) => (
-              <div className="verse" key={verseNumber}>
-                <div className="verse-number">{verseNumber}</div>
-                <p>{verse.translation}</p>
-              </div>
-            ))}
-          </div>
-        </article>
+          ) : (
+            <ReaderPane title={`Chapter ${number}`} surah={surah} />
+          )}
 
-        <button
-          className="nav-arrow right"
-          type="button"
-          aria-label="Next chapter"
-          disabled={!nextSurah}
-          onClick={() => nextSurah && navigate(`/surah/${nextSurah.number}-${nextSurah.slug}`)}
-        >
-          <ChevronRight size={22} />
-        </button>
+          <button
+            className="nav-arrow right"
+            type="button"
+            aria-label="Next chapter"
+            disabled={!nextSurah}
+            onClick={() => nextSurah && navigate(`/surah/${nextSurah.number}-${nextSurah.slug}`)}
+          >
+            <ChevronRight size={22} />
+          </button>
+        </div>
       </main>
     </Shell>
+  );
+}
+
+function ReaderPane({ title, surah }: { title: string; surah: Surah }) {
+  return (
+    <article className="panel reader-panel">
+      <div className="surah-header">
+        <div>
+          <p className="chapter-label">{title}</p>
+          <h2>{surah.name}</h2>
+        </div>
+      </div>
+      <div className="verses">
+        {Object.entries(surah.verses).map(([verseNumber, verse]) => (
+          <div className="verse" key={verseNumber}>
+            <div className="verse-number">{verseNumber}</div>
+            <p>{verse.translation}</p>
+          </div>
+        ))}
+      </div>
+    </article>
+  );
+}
+
+function ParallelPane({ title, surah }: { title: string; surah?: ParallelSurah }) {
+  return (
+    <article className="panel reader-panel">
+      <div className="surah-header">
+        <div>
+          <p className="chapter-label">{title}</p>
+          <h2>{surah?.name || ""}</h2>
+        </div>
+      </div>
+      <div className="parallel-verses">
+        {Object.entries(surah?.verses ?? {}).map(([verseNumber, verse]) => (
+          <div className="parallel-verse" key={verseNumber}>
+            <div className="verse-number">{verseNumber}</div>
+            <div className="parallel-texts">
+              <p>{verse.ArabicPersianScript ?? ""}</p>
+              <p>{verse.Translation ?? ""}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </article>
   );
 }
 
