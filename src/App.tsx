@@ -175,8 +175,20 @@ function HomePage() {
       </div>
 
       <main className="content-grid home-grid">
-        <article className="panel reader-panel landing-panel">
-          <div className="page page-landing" />
+        <article className="panel reader-panel">
+          <div className="surah-header">
+            <div>
+              <h2>{normalizedData["1"]?.name ?? "Al-Fatiha"}</h2>
+            </div>
+          </div>
+          <div className="verses">
+            {Object.entries(normalizedData["1"]?.verses ?? {}).map(([verseNumber, verse]) => (
+              <div className="verse" key={verseNumber}>
+                <div className="verse-number">{verseNumber}</div>
+                <p>{verse.translation}</p>
+              </div>
+            ))}
+          </div>
         </article>
       </main>
     </Shell>
@@ -265,7 +277,6 @@ function SurahPage() {
         <article className="panel reader-panel">
           <div className="surah-header">
             <div>
-              <p className="chapter-label">Chapter</p>
               <h2>{surah.name}</h2>
             </div>
           </div>
