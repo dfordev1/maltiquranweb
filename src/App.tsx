@@ -55,6 +55,7 @@ const surahs: SurahEntry[] = Object.entries(normalizedData).map(([number, surah]
 }));
 
 const playStoreUrl = "https://play.google.com/store/apps/details?id=com.malti.quran";
+const defaultSurahId = "1-al-fatiha";
 
 function slugify(value: string) {
   return value
@@ -144,7 +145,7 @@ function HomePage() {
         <select
           className="select-box"
           aria-label="Select chapter"
-          defaultValue="1-al-fatiha"
+          defaultValue={defaultSurahId}
           onChange={(event) => {
             if (!event.target.value) return;
             navigate(`/surah/${event.target.value}`);
@@ -231,14 +232,14 @@ function SurahPage() {
     <Shell>
       <main className="content-grid surah-grid">
         <div className="toolbar-row page-toolbar">
-          <select
-            className="select-box"
-            aria-label="Select chapter"
-            value={id ?? ""}
-            onChange={(event) => {
-              if (!event.target.value) return;
-              navigate(`/surah/${event.target.value}`);
-            }}
+        <select
+          className="select-box"
+          aria-label="Select chapter"
+          value={id ?? defaultSurahId}
+          onChange={(event) => {
+            if (!event.target.value) return;
+            navigate(`/surah/${event.target.value}`);
+          }}
           >
             <option value={defaultSurahId}>Chapter</option>
             {surahs.map((item) => (
