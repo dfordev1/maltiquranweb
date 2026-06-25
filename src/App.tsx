@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
-import { BookOpen, Menu, Search, Shield, Info } from "lucide-react";
+import { useEffect, useMemo } from "react";
+import { Link, NavLink, Route, Routes, useLocation, useParams } from "react-router-dom";
+import { BookOpen, Home, Info, Search, Shield, ChevronRight } from "lucide-react";
 
 type Verse = { translation: string };
 type Surah = { name: string; verses: Record<string, Verse> };
@@ -15,63 +16,57 @@ const data = Object.fromEntries(
     .flatMap(([, module]) => Object.entries(module as Record<string, Surah>)),
 ) as Record<string, Surah>;
 
-export default function App() {
-  const surahs = useMemo(
-    () =>
-      Object.entries(data).map(([number, surah]) => ({
-        number,
-        name: surah.name,
-        verseCount: Object.keys(surah.verses).length,
-      })),
-    [],
-  );
+type SurahEntry = {
+  number: string;
+  name: string;
+  verseCount: number;
+  slug: string;
+};
 
-  const [query, setQuery] = useState("");
-  const [activeSurah, setActiveSurah] = useState(surahs[0]?.number ?? "1");
-  const [page, setPage] = useState<"read" | "about" | "privacy">("read");
+const surahs: SurahEntry[] = Object.entries(data).map(([number, surah]) => ({
+  number,
+  name: surah.name,
+  verseCount: Object.keys(surah.verses).length,
+  slug: slugify(surah.name),
+}));
 
-  const filtered = surahs.filter((surah) => {
-    const q = query.trim().toLowerCase();
-    return !q || `${surah.number} ${surah.name}`.toLowerCase().includes(q);
-  });
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
-  const current = data[activeSurah] ?? data[surahs[0]?.number ?? "1"];
+function setSeo({ title, description, canonical }: { title: string; description: string; canonical: string }) {
+  document.title = title;
+  const upsertMeta = (selector: string, attr: "name" | "property", key: string, value: string) => {
+    let tag = document.head.querySelector<HTMLMetaElement>(`${selector}[${attr}="${key}"]`);
+    if (!tag) {
+      tag = document.createElement("meta");
+      tag.setAttribute(attr, key);
+      document.head.appendChild(tag);
+    }
+    tag.content = value;
+  };
+  const upsertLink = (rel: string, href: string) => {
+    let tag = document.head.querySelector<HTMLLinkElement>(`link[rel="${rel}"]`);
+    if (!tag) {
+      tag = document.createElement("link");
+      tag.rel = rel;
+      document.head.appendChild(tag);
+    }
+    tag.href = href;
+  };
+  upsertMeta("meta", "name", "description", description);
+  upsertMeta("meta", "property", "og:title", title);
+  upsertMeta("meta", "property", "og:description", description);
+  upsertMeta("meta", "property", "og:url", canonical);
+  upsertMeta("meta", "name", "twitter:title", title);
+  upsertMeta("meta", "name", "twitter:description", description);
+  upsertLink("canonical", canonical);
+}
 
-  useEffect(() => {
-    if (!current) return;
-    const title = `Surah ${current.name} | Il-Quran bil-Malti`;
-    document.title = title;
-    const description = `Read ${current.name} in Maltese on Il-Quran bil-Malti.`;
-    const canonicalUrl = "https://maltiquran.com/";
-    const upsertMeta = (selector: string, attr: "name" | "property", key: string, value: string) => {
-      let tag = document.head.querySelector<HTMLMetaElement>(`${selector}[${attr}="${key}"]`);
-      if (!tag) {
-        tag = document.createElement("meta");
-        tag.setAttribute(attr, key);
-        document.head.appendChild(tag);
-      }
-      tag.content = value;
-    };
-
-    upsertMeta('meta', 'name', 'description', description);
-    upsertMeta('meta', 'property', 'og:title', title);
-    upsertMeta('meta', 'property', 'og:description', description);
-    upsertMeta('meta', 'property', 'og:url', canonicalUrl);
-    upsertMeta('meta', 'name', 'twitter:title', title);
-    upsertMeta('meta', 'name', 'twitter:description', description);
-  }, [current]);
-
-  if (surahs.length === 0) {
-    return (
-      <div className="app-shell">
-        <section className="panel page">
-          <h1>Il-Quran bil-Malti</h1>
-          <p>No Quran data loaded yet. Check the JSON chunk files in <code>src/data/quran</code>.</p>
-        </section>
-      </div>
-    );
-  }
-
+function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="app-shell">
       <header className="hero panel">
@@ -79,8 +74,8 @@ export default function App() {
           <p className="eyebrow">Il-Quran bil-Malti</p>
           <h1>Maltese Quran reader</h1>
           <p className="lede">
-            Clean, static, and simple. The site reads directly from local JSON so there is no
-            backend layer to break deployment.
+            Clean, static, and simple. The site reads directly from local JSON with real surah
+            pages for better discovery.
           </p>
         </div>
         <div className="hero-badge">
@@ -88,88 +83,217 @@ export default function App() {
           <span>Static-first launch base</span>
         </div>
       </header>
+      {children}
+    </div>
+  );
+}
 
+function HomePage() {
+  const { search } = useLocation();
+  const q = new URLSearchParams(search).get("q")?.trim().toLowerCase() ?? "";
+  const filtered = useMemo(
+    () => surahs.filter((surah) => !q || `${surah.number} ${surah.name}`.toLowerCase().includes(q)),
+    [q],
+  );
+
+  useEffect(() => {
+    setSeo({
+      title: "Il-Quran bil-Malti",
+      description: "A clean Maltese Quran reader with real surah pages, fast search, and static content.",
+      canonical: "https://maltiquran.com/",
+    });
+  }, []);
+
+  return (
+    <Shell>
       <section className="toolbar panel">
         <Search size={18} />
         <input
           aria-label="Search surahs"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          defaultValue={q}
+          onChange={(event) => {
+            const url = new URL(window.location.href);
+            if (event.target.value.trim()) url.searchParams.set("q", event.target.value);
+            else url.searchParams.delete("q");
+            window.history.replaceState({}, "", `${url.pathname}${url.search}`);
+          }}
           placeholder="Search surah number or name"
         />
       </section>
 
       <nav className="nav-row">
-        <button className={page === "read" ? "nav-chip active" : "nav-chip"} onClick={() => setPage("read")}>
-          <BookOpen size={16} /> Reader
-        </button>
-        <button className={page === "about" ? "nav-chip active" : "nav-chip"} onClick={() => setPage("about")}>
+        <NavLink className={({ isActive }) => (isActive ? "nav-chip active" : "nav-chip")} to="/">
+          <Home size={16} /> Home
+        </NavLink>
+        <NavLink className={({ isActive }) => (isActive ? "nav-chip active" : "nav-chip")} to="/about">
           <Info size={16} /> About
-        </button>
-        <button className={page === "privacy" ? "nav-chip active" : "nav-chip"} onClick={() => setPage("privacy")}>
-          <Menu size={16} /> Privacy
-        </button>
+        </NavLink>
+        <NavLink className={({ isActive }) => (isActive ? "nav-chip active" : "nav-chip")} to="/privacy">
+          <Info size={16} /> Privacy
+        </NavLink>
       </nav>
 
-      {page === "read" && (
-        <main className="content-grid">
-          <aside className="panel list-panel">
-            <div className="panel-title">
-              <BookOpen size={18} />
-              <span>Surahs</span>
-            </div>
-            <div className="surah-list">
-              {filtered.map((surah) => (
-                <button
-                  key={surah.number}
-                  className={surah.number === activeSurah ? "surah-item active" : "surah-item"}
-                  onClick={() => setActiveSurah(surah.number)}
-                >
-                  <strong>
-                    {surah.number}. {surah.name}
-                  </strong>
-                  <span>{surah.verseCount} verses</span>
-                </button>
-              ))}
-            </div>
-          </aside>
+      <main className="content-grid">
+        <aside className="panel list-panel">
+          <div className="panel-title">
+            <BookOpen size={18} />
+            <span>Surahs</span>
+          </div>
+          <div className="surah-list">
+            {filtered.map((surah) => (
+              <Link key={surah.number} to={`/surah/${surah.number}-${surah.slug}`} className="surah-item">
+                <strong>
+                  {surah.number}. {surah.name}
+                </strong>
+                <span>{surah.verseCount} verses</span>
+              </Link>
+            ))}
+          </div>
+        </aside>
 
-          <article className="panel reader-panel">
-            <div className="panel-title">
-              <BookOpen size={18} />
-              <span>{current?.name}</span>
-            </div>
-            <div className="verses">
-              {Object.entries(current?.verses ?? {}).map(([verseNumber, verse]) => (
-                <div className="verse" key={verseNumber}>
-                  <div className="verse-number">{verseNumber}</div>
-                  <p>{verse.translation}</p>
-                </div>
-              ))}
-            </div>
-          </article>
-        </main>
-      )}
+        <article className="panel reader-panel">
+          <div className="panel-title">
+            <BookOpen size={18} />
+            <span>Read a surah</span>
+          </div>
+          <div className="page">
+            <h2>Select a surah from the list</h2>
+            <p>
+              Each surah now has its own crawlable URL so search engines can index the content more
+              effectively.
+            </p>
+          </div>
+        </article>
+      </main>
+    </Shell>
+  );
+}
 
-      {page === "about" && (
+function SurahPage() {
+  const { id } = useParams();
+  const number = id?.split("-")[0] ?? "";
+  const surah = data[number];
+
+  useEffect(() => {
+    if (!surah) return;
+    setSeo({
+      title: `Surah ${surah.name} | Il-Quran bil-Malti`,
+      description: `Read Surah ${surah.name} in Maltese on Il-Quran bil-Malti.`,
+      canonical: `https://maltiquran.com/surah/${number}-${slugify(surah.name)}`,
+    });
+  }, [number, surah]);
+
+  if (!surah) {
+    return (
+      <Shell>
         <section className="panel page">
-          <h2>About</h2>
-          <p>
-            This is the clean public website base for maltiquran.com. It uses local Quran JSON
-            data and keeps the UI simple so deployments stay predictable.
-          </p>
+          <h2>Surah not found</h2>
+          <p>The requested surah does not exist.</p>
+          <Link className="nav-chip active" to="/">
+            Back home
+          </Link>
         </section>
-      )}
+      </Shell>
+    );
+  }
 
-      {page === "privacy" && (
-        <section className="panel page">
-          <h2>Privacy</h2>
-          <p>
-            No user accounts and no built-in tracking. The site serves static content from the
-            repo.
-          </p>
-        </section>
-      )}
-    </div>
+  return (
+    <Shell>
+      <nav className="nav-row">
+        <NavLink className={({ isActive }) => (isActive ? "nav-chip active" : "nav-chip")} to="/">
+          <Home size={16} /> Home
+        </NavLink>
+        <NavLink className={({ isActive }) => (isActive ? "nav-chip active" : "nav-chip")} to="/about">
+          <Info size={16} /> About
+        </NavLink>
+        <NavLink className={({ isActive }) => (isActive ? "nav-chip active" : "nav-chip")} to="/privacy">
+          <Info size={16} /> Privacy
+        </NavLink>
+      </nav>
+
+      <main className="content-grid">
+        <article className="panel reader-panel">
+          <div className="panel-title">
+            <BookOpen size={18} />
+            <span>
+              {number}. {surah.name}
+            </span>
+          </div>
+          <div className="verses">
+            {Object.entries(surah.verses).map(([verseNumber, verse]) => (
+              <div className="verse" key={verseNumber}>
+                <div className="verse-number">{verseNumber}</div>
+                <p>{verse.translation}</p>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <aside className="panel list-panel">
+          <div className="panel-title">
+            <Shield size={18} />
+            <span>Nearby links</span>
+          </div>
+          <div className="surah-list">
+            {surahs.slice(Math.max(0, Number(number) - 3), Number(number) + 2).map((item) => (
+              <Link key={item.number} className="surah-item" to={`/surah/${item.number}-${item.slug}`}>
+                <strong>
+                  {item.number}. {item.name}
+                </strong>
+                <span>{item.verseCount} verses</span>
+              </Link>
+            ))}
+          </div>
+        </aside>
+      </main>
+    </Shell>
+  );
+}
+
+function StaticPage({ title, body, path }: { title: string; body: string; path: string }) {
+  useEffect(() => {
+    setSeo({
+      title: `${title} | Il-Quran bil-Malti`,
+      description: body,
+      canonical: `https://maltiquran.com${path}`,
+    });
+  }, [body, path, title]);
+
+  return (
+    <Shell>
+      <section className="panel page">
+        <h2>{title}</h2>
+        <p>{body}</p>
+      </section>
+    </Shell>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/surah/:id" element={<SurahPage />} />
+      <Route
+        path="/about"
+        element={
+          <StaticPage
+            title="About"
+            body="This is the clean public website base for maltiquran.com."
+            path="/about"
+          />
+        }
+      />
+      <Route
+        path="/privacy"
+        element={
+          <StaticPage
+            title="Privacy"
+            body="No user accounts and no built-in tracking. The site serves static content from the repo."
+            path="/privacy"
+          />
+        }
+      />
+    </Routes>
   );
 }
