@@ -169,6 +169,18 @@ h2 {
   align-items: start;
 }
 
+.surah-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.surah-grid .reader-panel {
+  min-height: 72vh;
+}
+
+.surah-grid .related-panel {
+  margin-top: 0;
+}
+
 .list-panel,
 .reader-panel,
 .page {

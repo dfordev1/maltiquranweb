@@ -167,7 +167,7 @@ function HomePage() {
         </NavLink>
       </nav>
 
-      <main className="content-grid">
+      <main className="content-grid home-grid">
         <aside className="panel list-panel">
           <div className="panel-title">
             <BookOpen size={18} />
@@ -252,7 +252,7 @@ function SurahPage() {
         </NavLink>
       </nav>
 
-      <main className="content-grid">
+      <main className="content-grid surah-grid">
         <article className="panel reader-panel">
           <div className="surah-header">
             <div>
@@ -274,7 +274,7 @@ function SurahPage() {
           </div>
         </article>
 
-        <aside className="panel list-panel">
+        <aside className="panel list-panel related-panel">
           <div className="panel-title">
             <Shield size={18} />
             <span>More surahs</span>
