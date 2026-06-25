@@ -4,7 +4,11 @@ import { BookOpen, Menu, Search, Shield, Info } from "lucide-react";
 type Verse = { translation: string };
 type Surah = { name: string; verses: Record<string, Verse> };
 
-const chunkModules = import.meta.glob("./data/quran/*.json", { eager: true });
+const chunkModules = import.meta.glob("./data/quran/*.json", {
+  eager: true,
+  import: "default",
+});
+
 const data = Object.fromEntries(
   Object.entries(chunkModules)
     .sort(([left], [right]) => left.localeCompare(right))
@@ -32,6 +36,17 @@ export default function App() {
   });
 
   const current = data[activeSurah] ?? data[surahs[0]?.number ?? "1"];
+
+  if (surahs.length === 0) {
+    return (
+      <div className="app-shell">
+        <section className="panel page">
+          <h1>Il-Quran bil-Malti</h1>
+          <p>No Quran data loaded yet. Check the JSON chunk files in <code>src/data/quran</code>.</p>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="app-shell">
