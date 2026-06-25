@@ -87,7 +87,6 @@ h2 {
   line-height: 1.6;
 }
 
-.hero-badge,
 .toolbar,
 .panel-title,
 .nav-chip,
@@ -96,16 +95,6 @@ h2 {
 .hero-actions {
   display: flex;
   align-items: center;
-}
-
-.hero-badge {
-  gap: 8px;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  color: var(--muted);
-  white-space: nowrap;
-  height: fit-content;
 }
 
 .hero-actions {

@@ -98,23 +98,16 @@ function Shell({ children }: { children: React.ReactNode }) {
       <header className="hero panel">
         <div>
           <p className="eyebrow">Il-Quran bil-Malti</p>
-          <h1>Maltese Quran reader</h1>
-          <p className="lede">
-            A quiet, minimal reading space for the Maltese Quran. Simple like a classic book,
-            with no distraction and no decorative clutter.
-          </p>
+          <h1>Maltese Quran</h1>
+          <p className="lede">Read the Maltese Quran in a plain, classic layout.</p>
           <div className="hero-actions">
             <Link className="text-link" to="/">
-              Start reading
+              Open surahs
             </Link>
-            <a className="text-link" href={playStoreUrl} target="_blank" rel="noreferrer">
+            <a className="text-link subtle" href={playStoreUrl} target="_blank" rel="noreferrer">
               Android app
             </a>
           </div>
-        </div>
-        <div className="hero-badge">
-          <Shield size={18} />
-          <span>Plain reading mode</span>
         </div>
       </header>
       {children}
