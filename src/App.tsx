@@ -333,7 +333,7 @@ function SurahPage() {
           {mode === "parallel" ? (
             <div className="parallel-grid">
               <ReaderPane title={`Chapter ${number}`} surah={surah} />
-              <ParallelPane title={`Chapter ${number}`} surah={parallelSurah} />
+              <ReaderPane title={`Chapter ${number}`} surah={surah} />
             </div>
           ) : (
             <ReaderPane title={`Chapter ${number}`} surah={surah} />
