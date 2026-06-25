@@ -252,9 +252,11 @@ button {
 
 .verse {
   padding: 8px 0;
-  font-size: 0.96rem;
-  line-height: 1.75;
-  text-align: center;
+  font-size: 1rem;
+  line-height: 1.9;
+  text-align: justify;
+  text-justify: inter-word;
+  text-align-last: left;
 }
 
 .verse-number {
@@ -269,6 +271,30 @@ button {
 .verse p {
   display: inline;
   margin: 0;
+  hyphens: auto;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.parallel-verse {
+  padding: 8px 0;
+  border-bottom: 1px solid #ededed;
+}
+
+.parallel-texts {
+  display: grid;
+  gap: 8px;
+}
+
+.parallel-texts p {
+  margin: 0;
+  font-size: 0.94rem;
+  line-height: 1.8;
+  text-align: justify;
+  text-justify: inter-word;
+  text-align-last: left;
+  hyphens: auto;
+  overflow-wrap: anywhere;
 }
 
 .nav-arrow {
@@ -389,6 +415,10 @@ button {
 
   .verse {
     text-align: left;
+  }
+
+  .parallel-texts p {
+    font-size: 0.9rem;
   }
 
   .nav-arrow {
