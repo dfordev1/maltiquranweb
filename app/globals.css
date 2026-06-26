@@ -1,0 +1,101 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap");
+
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --muted: #7a7a7a;
+  --text: #111111;
+  --line: #e5e5e5;
+  --pill: #efedeb;
+}
+
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+a { color: inherit; text-decoration: none; }
+button, input, select { font: inherit; }
+button { border: 0; background: none; padding: 0; }
+.app-shell { width: 100%; min-height: 100vh; background: #fff; }
+.topbar {
+  display: grid;
+  grid-template-columns: auto minmax(280px, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  padding: 10px 22px 8px;
+}
+.brand { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.03em; white-space: nowrap; }
+.search-pill {
+  display: flex; align-items: center; gap: 12px;
+  min-height: 54px; padding: 0 16px 0 20px;
+  border-radius: 999px; background: var(--pill); color: #9a9a9a;
+}
+.search-pill input { width: 100%; border: 0; outline: none; background: transparent; color: #444; }
+.top-actions { display: flex; align-items: center; gap: 18px; white-space: nowrap; }
+.app-link { font-size: 1rem; font-weight: 800; }
+.icon-btn { display: grid; place-items: center; width: 38px; height: 38px; color: #111; }
+.content-grid { width: 100%; }
+.toolbar-row {
+  display: flex; align-items: center; justify-content: center; gap: 20px;
+  padding: 14px 22px 12px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  min-height: 72px;
+}
+.select-box {
+  min-width: 300px; padding: 8px 32px 8px 0; border: 0; border-bottom: 1px solid #e3e3e3;
+  background: transparent; font-size: 0.98rem; outline: none; appearance: none; color: #111;
+  background-image: linear-gradient(45deg, transparent 50%, #111 50%), linear-gradient(135deg, #111 50%, transparent 50%);
+  background-position: calc(100% - 18px) 52%, calc(100% - 12px) 52%; background-size: 6px 6px, 6px 6px; background-repeat: no-repeat;
+}
+.utility-icons { display: flex; align-items: center; gap: 18px; color: #111; }
+.parallel-link { display: flex; align-items: center; gap: 10px; font-size: 0.96rem; }
+.circle-btn { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 999px; border: 1px solid #e2e2e2; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.aa { font-size: 1rem; font-weight: 800; }
+.home-grid, .surah-grid { display: grid; grid-template-columns: minmax(0,1fr); align-items: start; }
+.home-grid { padding: 0 0 20px; }
+.surah-grid { position: relative; justify-items: center; padding: 18px 0 24px; }
+.panel { background: var(--panel); }
+.reader-panel { width: min(860px, calc(100% - 96px)); min-height: 68vh; margin: 0 auto; display: flex; flex-direction: column; justify-content: center; }
+.page { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 26px 24px 34px; }
+.page h2, .surah-header h2 { margin: 0; font-weight: 800; letter-spacing: -0.03em; }
+.page h2 { font-size: 1.4rem; line-height: 1.2; }
+.surah-header { text-align: center; padding-bottom: 14px; }
+.surah-header h2 { font-size: 1.8rem; }
+.verses { width: min(620px, 100%); margin: 0 auto; }
+.verse { padding: 8px 0; font-size: 1rem; line-height: 1.9; text-align: justify; text-justify: inter-word; text-align-last: left; margin: 0 auto; hyphens: auto; overflow-wrap: anywhere; word-break: normal; }
+.verse-number { display: inline-block; vertical-align: super; margin-right: 6px; font-size: 0.72rem; line-height: 1; color: #666; }
+.verse p { display: inline; margin: 0; }
+.nav-arrow { position: fixed; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 48px; height: 48px; border-radius: 999px; border: 1px solid #dfdfdf; background: #fff; color: #999; box-shadow: 0 4px 18px rgba(0,0,0,0.08); }
+.nav-arrow.left { left: 20px; }
+.nav-arrow.right { right: 20px; }
+.nav-arrow:disabled { opacity: 0.35; cursor: default; }
+.surah-nav { width: min(260px, 100%); display: grid; gap: 10px; padding: 16px 0 0 24px; }
+.surah-chip { text-align: left; padding: 10px 12px; border: 1px solid var(--line); border-radius: 14px; background: #fff; color: #111; }
+.breadcrumb, .site-footer, .nav-row, .hero-actions, .section-head, .surah-list { display: none; }
+@media (max-width: 1100px) {
+  .topbar { grid-template-columns: 1fr; gap: 12px 16px; }
+  .top-actions { justify-content: flex-start; flex-wrap: wrap; }
+  .toolbar-row { gap: 14px; flex-wrap: wrap; }
+  .select-box { min-width: 240px; }
+  .reader-panel { width: min(760px, calc(100% - 40px)); }
+  .nav-arrow { width: 44px; height: 44px; }
+  .nav-arrow.left { left: 10px; }
+  .nav-arrow.right { right: 10px; }
+}
+@media (max-width: 760px) {
+  .topbar { padding: 14px 14px 10px; }
+  .toolbar-row { padding: 12px 14px 10px; gap: 10px; }
+  .select-box { min-width: 100%; }
+  .toolbar-row, .page-toolbar { flex-direction: column; align-items: stretch; }
+  .reader-panel { width: calc(100% - 18px); min-height: auto; }
+  .page { padding: 20px 14px 24px; }
+  .surah-header h2 { font-size: 1.45rem; }
+  .verse { text-align: left; }
+  .verses { max-width: 100%; }
+  .nav-arrow { top: auto; bottom: 14px; transform: none; }
+  .surah-nav { width: 100%; padding: 12px 14px 0; }
+}
