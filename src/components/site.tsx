@@ -74,7 +74,6 @@ function Toolbar({ currentValue, onChange }: { currentValue: string; onChange: (
   return (
     <div className="toolbar-row">
       <select className="select-box" aria-label="Select chapter" value={currentValue} onChange={(event) => onChange(event.target.value)}>
-        <option value={defaultSurahId}>Chapter</option>
         {surahs.map((surah) => (
           <option key={surah.number} value={`${surah.number}-${surah.slug}`}>
             {surah.number}. {surah.name}
@@ -126,13 +125,6 @@ export function HomeReader() {
             ))}
           </div>
         </article>
-        <aside className="surah-nav">
-          {surahs.slice(0, 12).map((surah) => (
-            <button key={surah.number} className="surah-chip" onClick={() => router.push(`/surah/${surah.number}-${surah.slug}`)}>
-              {surah.number}. {surah.name}
-            </button>
-          ))}
-        </aside>
       </main>
     </Shell>
   );
