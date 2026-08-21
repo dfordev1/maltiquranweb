@@ -30,10 +30,19 @@ button { border: 0; padding: 0; background: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 18px;
   border-bottom: 1px solid var(--line);
 }
 .brand { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.02em; }
+.header-links { display: flex; align-items: center; gap: 16px; white-space: nowrap; }
 .about-link { font-size: 0.9rem; color: var(--muted); }
+.playstore-link {
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
 
 .chapter-bar {
   width: min(680px, calc(100% - 32px));
@@ -124,7 +133,11 @@ button { border: 0; padding: 0; background: none; }
 .static-page p { margin: 0; line-height: 1.8; color: #454545; }
 
 @media (max-width: 600px) {
-  .site-header { height: 56px; padding: 0 16px; }
+  .site-header { height: 56px; padding: 0 14px; gap: 10px; }
+  .brand { font-size: .98rem; }
+  .header-links { gap: 10px; }
+  .about-link { display: none; }
+  .playstore-link { padding: 7px 10px; font-size: .8rem; }
   .chapter-bar { width: calc(100% - 20px); margin-top: 10px; grid-template-columns: 40px minmax(0, 1fr) 40px; }
   .chapter-bar button, .chapter-bar select { height: 40px; }
   .reader { width: calc(100% - 28px); margin-top: 30px; margin-bottom: 48px; }
