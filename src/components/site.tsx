@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { defaultSurahId, normalizedData, surahs } from "@/lib/quran";
+import { defaultSurahId, normalizedData, playStoreUrl, surahs } from "@/lib/quran";
 
 type PageProps = { surahId?: string };
 
@@ -29,7 +29,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
     <div className="app-shell">
       <header className="site-header">
         <a className="brand" href="/">Il-Quran bil-Malti</a>
-        <a className="about-link" href="/about">Dwar</a>
+        <nav className="header-links" aria-label="Main navigation">
+          <a className="playstore-link" href={playStoreUrl} target="_blank" rel="noreferrer">Niżżel l-app</a>
+          <a className="about-link" href="/about">Dwar</a>
+        </nav>
       </header>
       {children}
     </div>
