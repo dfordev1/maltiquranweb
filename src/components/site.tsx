@@ -2,19 +2,14 @@
 
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { defaultSurahId, normalizedData, surahs } from "@/lib/quran";
 
-type PageProps = {
-  title?: string;
-  body?: string;
-  path?: string;
-  surahId?: string;
-};
+type PageProps = { surahId?: string };
 
 function setSeo(title: string, description: string, canonical: string) {
   document.title = title;
-  const upsertMeta = (attr: "name" | "property", key: string, value: string) => {
+  const setMeta = (attr: "name" | "property", key: string, value: string) => {
     let tag = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
     if (!tag) {
       tag = document.createElement("meta");
@@ -23,36 +18,18 @@ function setSeo(title: string, description: string, canonical: string) {
     }
     tag.content = value;
   };
-  let canonicalTag = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-  if (!canonicalTag) {
-    canonicalTag = document.createElement("link");
-    canonicalTag.rel = "canonical";
-    document.head.appendChild(canonicalTag);
-  }
-  canonicalTag.href = canonical;
-  upsertMeta("name", "description", description);
-  upsertMeta("property", "og:title", title);
-  upsertMeta("property", "og:description", description);
-  upsertMeta("property", "og:url", canonical);
+  setMeta("name", "description", description);
+  setMeta("property", "og:title", title);
+  setMeta("property", "og:description", description);
+  setMeta("property", "og:url", canonical);
 }
 
 export function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="app-shell">
       <header className="site-header">
-        <div className="header-inner">
-          <a className="brand" href="/" aria-label="Il-Quran bil-Malti home">
-            <span className="brand-mark">Q</span>
-            <span>Il-Quran bil-Malti</span>
-          </a>
-          <form className="header-search" onSubmit={(event) => event.preventDefault()}>
-            <Search size={17} aria-hidden="true" />
-            <input aria-label="Fittex fil-Quran" placeholder="Fittex fil-Quran…" />
-          </form>
-          <nav className="header-nav" aria-label="Main navigation">
-            <a href="/about">Dwar</a>
-          </nav>
-        </div>
+        <a className="brand" href="/">Il-Quran bil-Malti</a>
+        <a className="about-link" href="/about">Dwar</a>
       </header>
       {children}
     </div>
@@ -69,54 +46,47 @@ function ChapterControls({
 }: {
   currentValue: string;
   onChange: (value: string) => void;
-  previous?: boolean;
-  next?: boolean;
+  previous: boolean;
+  next: boolean;
   onPrevious?: () => void;
   onNext?: () => void;
 }) {
   return (
-    <div className="reader-controls-wrap">
-      <div className="reader-controls">
-        <button className="chapter-nav-button" type="button" aria-label="Surah ta' qabel" disabled={!previous} onClick={onPrevious}>
-          <ChevronLeft size={19} />
-        </button>
-        <label className="chapter-picker">
-          <span className="sr-only">Agħżel surah</span>
-          <select value={currentValue} onChange={(event) => onChange(event.target.value)} aria-label="Agħżel surah">
-            {surahs.map((surah) => (
-              <option key={surah.number} value={`${surah.number}-${surah.slug}`}>
-                {surah.number}. {surah.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button className="chapter-nav-button" type="button" aria-label="Surah li jmiss" disabled={!next} onClick={onNext}>
-          <ChevronRight size={19} />
-        </button>
-      </div>
-    </div>
+    <nav className="chapter-bar" aria-label="Navigazzjoni tas-surah">
+      <button type="button" aria-label="Surah ta' qabel" disabled={!previous} onClick={onPrevious}>
+        <ChevronLeft size={20} />
+      </button>
+      <select value={currentValue} onChange={(event) => onChange(event.target.value)} aria-label="Agħżel surah">
+        {surahs.map((surah) => (
+          <option key={surah.number} value={`${surah.number}-${surah.slug}`}>
+            {surah.number}. {surah.name}
+          </option>
+        ))}
+      </select>
+      <button type="button" aria-label="Surah li jmiss" disabled={!next} onClick={onNext}>
+        <ChevronRight size={20} />
+      </button>
+    </nav>
   );
 }
 
 function Reader({ surah }: { surah: NonNullable<(typeof normalizedData)[string]> }) {
   const verses = Object.entries(surah.verses);
   return (
-    <main className="reader-shell">
-      <article className="reader-card">
-        <header className="surah-header">
-          <div className="surah-kicker">Surah</div>
-          <h1>{surah.name}</h1>
-          <div className="surah-meta">{verses.length} versi</div>
-        </header>
-        <div className="verses">
-          {verses.map(([verseNumber, verse]) => (
-            <div className="verse" key={verseNumber}>
-              <span className="verse-number" aria-label={`Vers ${verseNumber}`}>{verseNumber}</span>
-              <p>{verse.translation}</p>
-            </div>
-          ))}
-        </div>
-      </article>
+    <main className="reader">
+      <header className="surah-heading">
+        <p>Surah</p>
+        <h1>{surah.name}</h1>
+        <span>{verses.length} versi</span>
+      </header>
+      <section className="verse-list">
+        {verses.map(([verseNumber, verse]) => (
+          <article className="verse" key={verseNumber}>
+            <span className="verse-number">{verseNumber}</span>
+            <p>{verse.translation}</p>
+          </article>
+        ))}
+      </section>
     </main>
   );
 }
@@ -126,14 +96,21 @@ export function HomeReader() {
   const fatiha = normalizedData["1"];
 
   useEffect(() => {
-    setSeo("Il-Quran bil-Malti", "Aqra l-Quran bil-Malti f'qarrej nadif u sempliċi.", "https://maltiquran.com/");
+    setSeo("Il-Quran bil-Malti", "Aqra l-Quran bil-Malti.", "https://maltiquran.com/");
   }, []);
 
   if (!fatiha) return null;
+  const next = surahs[1];
 
   return (
     <Shell>
-      <ChapterControls currentValue={defaultSurahId} onChange={(value) => router.push(`/surah/${value}`)} next onNext={() => router.push(`/surah/${surahs[1].number}-${surahs[1].slug}`)} />
+      <ChapterControls
+        currentValue={defaultSurahId}
+        onChange={(value) => router.push(`/surah/${value}`)}
+        previous={false}
+        next={Boolean(next)}
+        onNext={() => next && router.push(`/surah/${next.number}-${next.slug}`)}
+      />
       <Reader surah={fatiha} />
     </Shell>
   );
@@ -177,11 +154,9 @@ export function StaticPage({ title, body, path }: { title: string; body: string;
 
   return (
     <Shell>
-      <main className="static-shell">
-        <section className="static-card">
-          <h1>{title}</h1>
-          <p>{body}</p>
-        </section>
+      <main className="static-page">
+        <h1>{title}</h1>
+        <p>{body}</p>
       </main>
     </Shell>
   );
