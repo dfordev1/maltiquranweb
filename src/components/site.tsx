@@ -2,8 +2,8 @@
 
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { BookOpen, ChevronLeft, ChevronRight, Globe, Menu, Search, User, Volume2 } from "lucide-react";
-import { defaultSurahId, normalizedData, playStoreUrl, slugify, surahs } from "@/lib/quran";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { defaultSurahId, normalizedData, surahs } from "@/lib/quran";
 
 type PageProps = {
   title?: string;
@@ -14,8 +14,8 @@ type PageProps = {
 
 function setSeo(title: string, description: string, canonical: string) {
   document.title = title;
-  const upsertMeta = (selector: string, attr: "name" | "property", key: string, value: string) => {
-    let tag = document.head.querySelector<HTMLMetaElement>(`${selector}[${attr}="${key}"]`);
+  const upsertMeta = (attr: "name" | "property", key: string, value: string) => {
+    let tag = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
     if (!tag) {
       tag = document.createElement("meta");
       tag.setAttribute(attr, key);
@@ -23,46 +23,35 @@ function setSeo(title: string, description: string, canonical: string) {
     }
     tag.content = value;
   };
-  const upsertLink = (rel: string, href: string) => {
-    let tag = document.head.querySelector<HTMLLinkElement>(`link[rel="${rel}"]`);
-    if (!tag) {
-      tag = document.createElement("link");
-      tag.rel = rel;
-      document.head.appendChild(tag);
-    }
-    tag.href = href;
-  };
-  upsertMeta("meta", "name", "description", description);
-  upsertMeta("meta", "property", "og:title", title);
-  upsertMeta("meta", "property", "og:description", description);
-  upsertMeta("meta", "property", "og:url", canonical);
-  upsertMeta("meta", "name", "twitter:title", title);
-  upsertMeta("meta", "name", "twitter:description", description);
-  upsertLink("canonical", canonical);
+  let canonicalTag = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  if (!canonicalTag) {
+    canonicalTag = document.createElement("link");
+    canonicalTag.rel = "canonical";
+    document.head.appendChild(canonicalTag);
+  }
+  canonicalTag.href = canonical;
+  upsertMeta("name", "description", description);
+  upsertMeta("property", "og:title", title);
+  upsertMeta("property", "og:description", description);
+  upsertMeta("property", "og:url", canonical);
 }
 
 export function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="app-shell bible-shell">
-      <header className="topbar">
-        <div className="brand">Il-Quran bil-Malti</div>
-        <form className="search-pill" onSubmit={(event) => event.preventDefault()}>
-          <Search size={18} />
-          <input aria-label="Search verses, topics, and questions" placeholder="Search verses, topics, and questions..." />
-        </form>
-        <div className="top-actions">
-          <a className="app-link" href={playStoreUrl} target="_blank" rel="noreferrer">
-            Get the app
+    <div className="app-shell">
+      <header className="site-header">
+        <div className="header-inner">
+          <a className="brand" href="/" aria-label="Il-Quran bil-Malti home">
+            <span className="brand-mark">Q</span>
+            <span>Il-Quran bil-Malti</span>
           </a>
-          <button type="button" className="icon-btn" aria-label="Language">
-            <Globe size={22} />
-          </button>
-          <button type="button" className="icon-btn" aria-label="Menu">
-            <Menu size={22} />
-          </button>
-          <button type="button" className="icon-btn" aria-label="Account">
-            <User size={22} />
-          </button>
+          <form className="header-search" onSubmit={(event) => event.preventDefault()}>
+            <Search size={17} aria-hidden="true" />
+            <input aria-label="Fittex fil-Quran" placeholder="Fittex fil-Quran…" />
+          </form>
+          <nav className="header-nav" aria-label="Main navigation">
+            <a href="/about">Dwar</a>
+          </nav>
         </div>
       </header>
       {children}
@@ -70,62 +59,82 @@ export function Shell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Toolbar({ currentValue, onChange }: { currentValue: string; onChange: (value: string) => void }) {
+function ChapterControls({
+  currentValue,
+  onChange,
+  previous,
+  next,
+  onPrevious,
+  onNext,
+}: {
+  currentValue: string;
+  onChange: (value: string) => void;
+  previous?: boolean;
+  next?: boolean;
+  onPrevious?: () => void;
+  onNext?: () => void;
+}) {
   return (
-    <div className="toolbar-row">
-      <select className="select-box" aria-label="Select chapter" value={currentValue} onChange={(event) => onChange(event.target.value)}>
-        {surahs.map((surah) => (
-          <option key={surah.number} value={`${surah.number}-${surah.slug}`}>
-            {surah.number}. {surah.name}
-          </option>
-        ))}
-      </select>
-      <select className="select-box" aria-label="Select version" defaultValue="Malti">
-        <option value="Malti">Malti</option>
-        <option value="NIV">NIV</option>
-      </select>
-      <div className="utility-icons">
-        <span className="parallel-link">
-          <BookOpen size={14} /> Parallel
-        </span>
-        <button type="button" className="circle-btn" aria-label="Audio">
-          <Volume2 size={18} />
+    <div className="reader-controls-wrap">
+      <div className="reader-controls">
+        <button className="chapter-nav-button" type="button" aria-label="Surah ta' qabel" disabled={!previous} onClick={onPrevious}>
+          <ChevronLeft size={19} />
         </button>
-        <button type="button" className="circle-btn" aria-label="Text size">
-          <span className="aa">AA</span>
+        <label className="chapter-picker">
+          <span className="sr-only">Agħżel surah</span>
+          <select value={currentValue} onChange={(event) => onChange(event.target.value)} aria-label="Agħżel surah">
+            {surahs.map((surah) => (
+              <option key={surah.number} value={`${surah.number}-${surah.slug}`}>
+                {surah.number}. {surah.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button className="chapter-nav-button" type="button" aria-label="Surah li jmiss" disabled={!next} onClick={onNext}>
+          <ChevronRight size={19} />
         </button>
       </div>
     </div>
   );
 }
 
+function Reader({ surah }: { surah: NonNullable<(typeof normalizedData)[string]> }) {
+  const verses = Object.entries(surah.verses);
+  return (
+    <main className="reader-shell">
+      <article className="reader-card">
+        <header className="surah-header">
+          <div className="surah-kicker">Surah</div>
+          <h1>{surah.name}</h1>
+          <div className="surah-meta">{verses.length} versi</div>
+        </header>
+        <div className="verses">
+          {verses.map(([verseNumber, verse]) => (
+            <div className="verse" key={verseNumber}>
+              <span className="verse-number" aria-label={`Vers ${verseNumber}`}>{verseNumber}</span>
+              <p>{verse.translation}</p>
+            </div>
+          ))}
+        </div>
+      </article>
+    </main>
+  );
+}
+
 export function HomeReader() {
   const router = useRouter();
+  const fatiha = normalizedData["1"];
 
   useEffect(() => {
-    setSeo("Il-Quran bil-Malti", "A clean Maltese Quran reader with real surah pages, fast search, and static content.", "https://maltiquran.com/");
+    setSeo("Il-Quran bil-Malti", "Aqra l-Quran bil-Malti f'qarrej nadif u sempliċi.", "https://maltiquran.com/");
   }, []);
 
-  const fatiha = normalizedData["1"];
+  if (!fatiha) return null;
 
   return (
     <Shell>
-      <Toolbar currentValue={defaultSurahId} onChange={(value) => router.push(`/surah/${value}`)} />
-      <main className="content-grid home-grid">
-        <article className="panel reader-panel">
-          <div className="surah-header">
-            <h2>{fatiha?.name ?? "Al-Fatiha"}</h2>
-          </div>
-          <div className="verses">
-            {Object.entries(fatiha?.verses ?? {}).map(([verseNumber, verse]) => (
-              <div className="verse" key={verseNumber}>
-                <div className="verse-number">{verseNumber}</div>
-                <p>{verse.translation}</p>
-              </div>
-            ))}
-          </div>
-        </article>
-      </main>
+      <ChapterControls currentValue={defaultSurahId} onChange={(value) => router.push(`/surah/${value}`)} next onNext={() => router.push(`/surah/${surahs[1].number}-${surahs[1].slug}`)} />
+      <Reader surah={fatiha} />
     </Shell>
   );
 }
@@ -141,37 +150,22 @@ export function SurahReader({ surahId }: PageProps) {
 
   useEffect(() => {
     if (!surah) return;
-    setSeo(`Surah ${surah.name} | Il-Quran bil-Malti`, `Read Surah ${surah.name} in Maltese on Il-Quran bil-Malti.`, `https://maltiquran.com${pathname}`);
+    setSeo(`Surah ${surah.name} | Il-Quran bil-Malti`, `Aqra Surah ${surah.name} bil-Malti.`, `https://maltiquran.com${pathname}`);
   }, [pathname, surah]);
 
   if (!surah) return null;
 
   return (
     <Shell>
-      <main className="content-grid surah-grid">
-        <div className="toolbar-row page-toolbar">
-          <Toolbar currentValue={surahId ?? defaultSurahId} onChange={(value) => router.push(`/surah/${value}`)} />
-        </div>
-        <button className="nav-arrow left" type="button" aria-label="Previous chapter" disabled={!previousSurah} onClick={() => previousSurah && router.push(`/surah/${previousSurah.number}-${previousSurah.slug}`)}>
-          <ChevronLeft size={22} />
-        </button>
-        <article className="panel reader-panel">
-          <div className="surah-header">
-            <h2>{surah.name}</h2>
-          </div>
-          <div className="verses">
-            {Object.entries(surah.verses).map(([verseNumber, verse]) => (
-              <div className="verse" key={verseNumber}>
-                <div className="verse-number">{verseNumber}</div>
-                <p>{verse.translation}</p>
-              </div>
-            ))}
-          </div>
-        </article>
-        <button className="nav-arrow right" type="button" aria-label="Next chapter" disabled={!nextSurah} onClick={() => nextSurah && router.push(`/surah/${nextSurah.number}-${nextSurah.slug}`)}>
-          <ChevronRight size={22} />
-        </button>
-      </main>
+      <ChapterControls
+        currentValue={surahId ?? defaultSurahId}
+        onChange={(value) => router.push(`/surah/${value}`)}
+        previous={Boolean(previousSurah)}
+        next={Boolean(nextSurah)}
+        onPrevious={() => previousSurah && router.push(`/surah/${previousSurah.number}-${previousSurah.slug}`)}
+        onNext={() => nextSurah && router.push(`/surah/${nextSurah.number}-${nextSurah.slug}`)}
+      />
+      <Reader surah={surah} />
     </Shell>
   );
 }
@@ -183,10 +177,12 @@ export function StaticPage({ title, body, path }: { title: string; body: string;
 
   return (
     <Shell>
-      <section className="panel page">
-        <h2>{title}</h2>
-        <p>{body}</p>
-      </section>
+      <main className="static-shell">
+        <section className="static-card">
+          <h1>{title}</h1>
+          <p>{body}</p>
+        </section>
+      </main>
     </Shell>
   );
 }
