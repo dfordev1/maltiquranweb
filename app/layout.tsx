@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Il-Quran bil-Malti",
-  description: "A clean Maltese Quran reader with real surah pages and classic minimal UI.",
+  description: "Aqra l-Quran bil-Malti f'qarrej nadif u sempliċi.",
   metadataBase: new URL("https://maltiquran.com"),
   alternates: {
     canonical: "/",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="mt">
       <body>{children}</body>
     </html>
   );
